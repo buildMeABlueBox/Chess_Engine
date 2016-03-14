@@ -27,6 +27,7 @@ public class Game {
 //        Game game = new Game();
 //        game.initialize();
 //        game.printBoard();
+//
 //    }
 
     /**
@@ -70,8 +71,40 @@ public class Game {
      */
     private void initializeBoard() {
         assignColorsToSquares();
+        placePieces(white);
+        placePieces(black);
+    }
 
-        //TODO: create pieces for p1 and p2? or should pieces already be made and be within player class? Makes more sense for latter.
+    private void placePieces(Player player) {
+        int num;
+        Color color = player.getPlayerColor();
+        int i;
+
+        Piece[] pieces  = player.getPieces().toArray(new Piece[player.getPieces().size()]);
+        //place 8 pawns
+        for(i = 0; i<board.length; i++){
+            num = color == Color.WHITE? getRowNum(2): getRowNum(7);
+            board[num][i].setPiece(pieces[i]);
+        }
+        //place 2 rooks
+        num = color == Color.WHITE? getRowNum(1): getRowNum(8);
+        board[num][getNumFromChar('a')].setPiece(pieces[i++]);
+        board[num][getNumFromChar('h')].setPiece(pieces[i++]);
+
+        //place 2 bishops
+        board[num][getNumFromChar('f')].setPiece(pieces[i++]);
+        board[num][getNumFromChar('c')].setPiece(pieces[i++]);
+
+        //place 2 knights
+        board[num][getNumFromChar('g')].setPiece(pieces[i++]);
+        board[num][getNumFromChar('b')].setPiece(pieces[i++]);
+
+        //place 1 queen
+        board[num][getNumFromChar('d')].setPiece(pieces[i++]);
+
+        //place 1 king
+        board[num][getNumFromChar('e')].setPiece(pieces[i]);
+
     }
 
     /**
@@ -126,10 +159,10 @@ public class Game {
      */
     public void printBoard(){
         int rowNum = 8;
-        int count = 0;
-        int i = 0, j;
+        //int count = 0;
+        //int i = 0, j;
         for(Square[] sqArr: board){
-            j = i++%2;
+            //j = i++%2;
             for(Square sq : sqArr){
                 Piece piece = sq.getPiece();
                 if(piece != null){
@@ -175,23 +208,59 @@ public class Game {
         char color = pieceColor == Color.WHITE? 'w' : 'b';
         switch (piece.getPieceType()){
             case ROOK:
-                System.out.print(color + "R");
+                System.out.print(color + "R ");
                 break;
             case KING:
-                System.out.print(color+ "K");
+                System.out.print(color+ "K ");
                 break;
             case QUEEN:
-                System.out.print(color + "Q");
+                System.out.print(color + "Q ");
                 break;
             case KNIGHT:
-                System.out.print(color + "N");
+                System.out.print(color + "N ");
                 break;
             case PAWN:
-                System.out.print(color + "p");
+                System.out.print(color + "p ");
                 break;
             case BISHOP:
-                System.out.print(color + "B");
+                System.out.print(color + "B ");
                 break;
+        }
+    }
+
+
+    /**
+     * The way the board is shown is from top (8) to bottom (1),
+     * but if you try to access board[2][i] thinking you'd get
+     * row 2, you are actually getting row 6. So to counter this,
+     * just get the difference.
+     */
+    private int getRowNum(int rowNumWanted){
+        return 8-rowNumWanted;
+    }
+
+    private int getNumFromChar(char c){
+        switch(c){
+            default:
+                System.err.println("shouldn't be seeing this from getNumFromChar.. something went wrong..");
+                System.exit(1);
+
+            case 'a':
+                return 0;
+            case 'b':
+                return 1;
+            case 'c':
+                return 2;
+            case 'd':
+                return 3;
+            case 'e':
+                return 4;
+            case 'f':
+                return 5;
+            case 'g':
+                return 6;
+            case 'h':
+                return 7;
         }
     }
 

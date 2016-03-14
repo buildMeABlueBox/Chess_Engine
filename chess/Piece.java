@@ -23,6 +23,15 @@ public abstract class Piece {
     Square location;
     PieceType pieceType;
 
+    public Piece(){
+
+    }
+
+    public Piece(Color pieceColor, PieceType pieceType){
+        this.pieceColor = pieceColor;
+        this.pieceType = pieceType;
+    }
+
     public PieceType getPieceType() {
         return pieceType;
     }
@@ -32,6 +41,14 @@ public abstract class Piece {
     }
 
     public abstract boolean isMoveValid(Move move, Square[][] board);
+
+    public Square getLocation() {
+        return location;
+    }
+
+    public void setLocation(Square location) {
+        this.location = location;
+    }
 
     public Color getPieceColor() {
         return pieceColor;
