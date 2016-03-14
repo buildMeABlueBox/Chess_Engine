@@ -5,15 +5,15 @@ public class Chess {
 
 
     public static void main(String[] args) {
-        Game game = new Game();
+        Game chessGame = new Game();
 
-        game.startGame();
+        chessGame.startGame();
 
-        while(keepPlaying(game.getStatus())){
-            game.resume();
+        while(keepPlaying(chessGame.getStatus())){
+            chessGame.resume();
         }
 
-        printResult(game.getStatus());
+        printResult(chessGame.getStatus());
     }
 
     public static void printResult(GameStatus gameStatus){

@@ -21,9 +21,9 @@ public class Player {
     public Player(Color color){
         this.playerColor = color;
 
-        for(Piece piece : pieces){
-            piece.setPieceColor(color);
-        }
+//        for(Piece piece : pieces){
+//            piece.setPieceColor(color);
+//        }
 
         //white plays first
         if(color == Color.WHITE){
