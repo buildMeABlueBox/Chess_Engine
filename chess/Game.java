@@ -4,6 +4,8 @@ package chess;
  * Created by Abhijit on 2/29/16.
  */
 
+import java.util.Scanner;
+
 /**
  * The game controller class.
  * A game has:
@@ -25,9 +27,9 @@ public class Game {
 
 //    public static void main(String[] args){
 //        Game game = new Game();
-//        game.initialize();
-//        game.printBoard();
-//
+////        game.initialize();
+////        game.printBoard();
+//        game.requestInput();
 //    }
 
     /**
@@ -206,24 +208,25 @@ public class Game {
     private void printPiece(Piece piece){
         Color pieceColor = piece.getPieceColor();
         char color = pieceColor == Color.WHITE? 'w' : 'b';
+        System.out.print(color);
         switch (piece.getPieceType()){
             case ROOK:
-                System.out.print(color + "R ");
+                System.out.print( "R ");
                 break;
             case KING:
-                System.out.print(color+ "K ");
+                System.out.print( "K ");
                 break;
             case QUEEN:
-                System.out.print(color + "Q ");
+                System.out.print( "Q ");
                 break;
             case KNIGHT:
-                System.out.print(color + "N ");
+                System.out.print( "N ");
                 break;
             case PAWN:
-                System.out.print(color + "p ");
+                System.out.print( "p ");
                 break;
             case BISHOP:
-                System.out.print(color + "B ");
+                System.out.print( "B ");
                 break;
         }
     }
@@ -243,7 +246,7 @@ public class Game {
         switch(c){
             default:
                 System.err.println("shouldn't be seeing this from getNumFromChar.. something went wrong..");
-                System.exit(1);
+                return -1;
 
             case 'a':
                 return 0;
@@ -274,6 +277,133 @@ public class Game {
     private void setTurn(Player playerWhoWillPlay, Player playerWhoWontPlay){
         playerWhoWillPlay.setPlayerTurn(true);
         playerWhoWontPlay.setPlayerTurn(false);
+    }
+
+    private void requestInput(){
+        Player  player = white.getPlayerTurn() ? white : black;
+        System.out.println(player.getPlayerColor().toString().substring(0, 1) +
+                player.getPlayerColor().toString().substring(1).toLowerCase()+ "'s move:");
+
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+
+        checkInput(input);
+
+
+    }
+
+    /**
+     * Checks input. Heres how it checks:
+     * - checks if length of input is 2 or 3 (2 for just coordinates 3 in case person asks for draw)
+     * - if the length is 3, the last part of the input better be draw
+     * - checks coordinates are in follow the form of File, Rank.
+     *
+     * If any of these do not match, the user is then asked for the input again.
+     * @param input
+     */
+    private void checkInput(String input) {
+        Player  player = white.getPlayerTurn() ? white : black;
+        String[] individualInputs = input.split(" ");
+        switch(individualInputs.length){
+            default:
+                invalidInput();
+                return;
+            case 2:
+                if(!isFileRank(individualInputs[0])) {
+                    invalidInput();
+                    return;
+                }
+                if(!isFileRank(individualInputs[1])) {
+                    invalidInput();
+                    return;
+                }
+                //input is all clear
+                return;
+
+            case 3:
+                //check first two parts of input to see if they follow proper form
+                if(!isFileRank(individualInputs[0])) {;
+                    invalidInput();
+                    return;
+                }
+                if(!isFileRank(individualInputs[1])) {
+                    invalidInput();
+                    return;
+                }
+
+                //check third part to see if its going under a promotion (only if the size is 1)
+                if(individualInputs[2].length() == 1){
+                    //size of 3rd individual input might be indicating promotion. if thats the case, check to see that the ending location has an 8 or a 1 in it.
+                    if(!checkPromotionChar(individualInputs[2].charAt(0))){
+                        //isn't a valid promotion
+                        invalidInput();
+                        return;
+                    }
+                    if(individualInputs[1].charAt(1) != '8' && individualInputs[1].charAt(1) != '1'){
+                        //isn't 8 or 1 (indicating the piece -- hopefully a pawn -- isn't at the end of the board yet).
+                        invalidInput();
+                        return;
+                    }
+                    return;
+                }
+
+                //see if the user requested a draw.
+                if(!individualInputs[2].equalsIgnoreCase("draw")){
+                    //player did not ask for draw. its some random gibberish..
+                    invalidInput();
+                    return;
+                }
+
+                //input is all clear
+                return;
+        }
+    }
+
+    /**
+     * makes sure that user only inputs things like:
+     *
+     * e2 e5
+     * or
+     * e2 e5 draw
+     * @param individualInput
+     * @return
+     */
+    private boolean isFileRank(String individualInput) {
+        if(individualInput.length() != 2){
+            //input isn't file,rank size.
+            return false;
+        }
+        if(getNumFromChar(individualInput.charAt(0)) == -1){
+            //letter isn't a b c d e f g or h
+            return false;
+        }
+
+        if(Character.isDigit(individualInput.charAt(1)) && individualInput.charAt(1) != '9'){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkPromotionChar(char c){
+        //TODO: MIGHT want to toUpperCase c? what if they put n instead of N. is that technically wrong?
+        switch(c){
+            default:
+                return false;
+            case 'N':
+                return true;
+            case 'Q':
+                return true;
+            case 'B':
+                return true;
+            case 'R':
+                return true;
+        }
+    }
+
+    private void invalidInput(){
+        System.out.println("\ninvalid input. Please try again.\n");
+        requestInput();
     }
 
     public Square[][] getBoard() {
