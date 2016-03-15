@@ -25,12 +25,12 @@ public class Game {
         initialize();
     }
 
-    public static void main(String[] args){
-        Game game = new Game();
-        game.initialize();
-        printBoard(game.board);
-        requestInput(game.white);
-    }
+//    public static void main(String[] args){
+//        Game game = new Game();
+//        game.initialize();
+//        printBoard(game.board);
+//        requestInput(game.white);
+//    }
 
     /**
      * Resumes the game that is being played.
