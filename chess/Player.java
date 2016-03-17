@@ -1,6 +1,6 @@
 package chess;
 
-import java.util.AbstractList;
+import static chess.ChessUtil.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +60,7 @@ public class Player {
      */
     public GameStatus playTurn(Square[][] board, Move move){
         //TODO: implement.
-
-        return GameStatus.PENDING;
+        return GameStatus.BLACK_WINS;
     }
 
     public boolean getPlayerTurn(){

@@ -50,13 +50,12 @@ public final class ChessUtil {
      */
     private static Move getUserInput(String input, Player player, Square[][] board) {
         String[] individualInputs = input.split(" ");
-        String beginLocationString = individualInputs[0];
-        String endLocationString = individualInputs[1];
-        String promotionOrDraw = individualInputs[2];
         switch(individualInputs.length){
             default:
                 return invalidInput(player, board);
             case 2:
+                String beginLocationString = individualInputs[0];
+                String endLocationString = individualInputs[1];
                 if(!isFileRank(beginLocationString)) {
                     return invalidInput(player, board);
                 }
@@ -65,14 +64,23 @@ public final class ChessUtil {
                 }
                 //input is all clear
                 char c = ' ';
-                return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
+
+                Move move = new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
+                if(grabPiece(board,move) == null){
+                    return invalidInput(player,board);
+                }
+                return move;
 
             case 3:
+                String beginString = individualInputs[0];
+                String endString = individualInputs[1];
+                String promotionOrDraw = individualInputs[2];
+                Move len3move;
                 //check first two parts of input to see if they follow proper form
-                if(!isFileRank(beginLocationString)) {;
+                if(!isFileRank(beginString)) {;
                     return invalidInput(player, board);
                 }
-                if(!isFileRank(endLocationString)) {
+                if(!isFileRank(endString)) {
                     return invalidInput(player, board);
                 }
 
@@ -84,12 +92,16 @@ public final class ChessUtil {
                         //isn't a valid promotion
                         return invalidInput(player, board);
                     }
-                    if(endLocationString.charAt(1) != '8' && endLocationString.charAt(1) != '1'){
+                    if(endString.charAt(1) != '8' && endString.charAt(1) != '1'){
                         //isn't 8 or 1 (indicating the piece -- hopefully a pawn -- isn't at the end of the board yet).
                         return invalidInput(player, board);
                     }
 
-                    return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, promotionChar);
+                    len3move = new Move(getSquare(board, beginString),getSquare(board, endString),false, promotionChar);
+                    if(grabPiece(board, len3move) == null){
+                        return invalidInput(player,board);
+                    }
+                    return len3move;
                 }
 
                 //see if the user requested a draw.
@@ -99,7 +111,11 @@ public final class ChessUtil {
                 }
 
                 //input is all clear and asked for draw
-                return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),true,' ');
+                len3move = new Move(getSquare(board, beginString),getSquare(board, endString),true,' ');
+            if(grabPiece(board,len3move) == null){
+                return invalidInput(player,board);
+            }
+            return len3move;
         }
     }
 
@@ -273,4 +289,12 @@ public final class ChessUtil {
         int y = Character.getNumericValue(locationString.charAt(1));
         return board[x][y];
     }
+
+    public static Piece grabPiece(Square[][] board, Move move){
+        int col = move.getbeginLocation().getCol();
+        int row = move.getbeginLocation().getRow();
+        return board[getRowNum(col)][row].getPiece();
+    }
+
+
 }

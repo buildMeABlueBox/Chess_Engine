@@ -53,4 +53,11 @@ public class Move {
         this.askedForDraw = b;
     }
 
+    public char getPromotionTo() {
+        return promotionTo;
+    }
+
+    public void setPromotionTo(char promotionTo) {
+        this.promotionTo = promotionTo;
+    }
 }

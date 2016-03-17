@@ -21,6 +21,10 @@ public class Game {
     private final Player black = new Player(Color.BLACK);
     private GameStatus status;
 
+    public Game(){
+        status = GameStatus.PENDING;
+    }
+
     public void startGame(){
         initialize();
     }
@@ -41,8 +45,12 @@ public class Game {
     public void resume(){
         Player playerWhoWillPlayThisTurn = white.getPlayerTurn()? white : black;
         Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
+
+        printBoard(board);
+
         Move move = requestInput(playerWhoWillPlayThisTurn, board);
         status = playerWhoWillPlayThisTurn.playTurn(board, move);
+
         setTurn(playerWhoWillPlayNextTurn, playerWhoWillPlayThisTurn);
     }
 
