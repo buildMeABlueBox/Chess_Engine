@@ -60,7 +60,6 @@ public class Player {
      */
     public GameStatus playTurn(Square[][] board, Move move){
         //TODO: implement.
-
         return GameStatus.BLACK_WINS;
     }
 
