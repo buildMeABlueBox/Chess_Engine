@@ -51,15 +51,16 @@ public class Player {
     }
 
     /**
-     * -Print Board
-     * -Ask player for move
      * -Check if move is Valid
-     * -Keep until valid move is entered or player resigns
-     * -Update Board accordingly
+     * -Moves piece if it is
+     * -gets a list of pieces of opponent the moved piece can kill after it has been moved
+     * -checks if king of opponent can be killed
+     * -returns status depending on whether it is a check or checkmate.
      *
      */
     public GameStatus playTurn(Square[][] board, Move move){
         //TODO: implement.
+
         return GameStatus.BLACK_WINS;
     }
 

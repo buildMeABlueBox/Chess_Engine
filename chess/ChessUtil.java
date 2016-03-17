@@ -66,7 +66,7 @@ public final class ChessUtil {
                 char c = ' ';
 
                 Move move = new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
-                if(grabPiece(board,move) == null){
+                if(grabPiece(board,move.getbeginLocation()) == null){
                     return invalidInput(player,board);
                 }
                 return move;
@@ -98,7 +98,7 @@ public final class ChessUtil {
                     }
 
                     len3move = new Move(getSquare(board, beginString),getSquare(board, endString),false, promotionChar);
-                    if(grabPiece(board, len3move) == null){
+                    if(grabPiece(board, len3move.getbeginLocation()) == null){
                         return invalidInput(player,board);
                     }
                     return len3move;
@@ -112,7 +112,7 @@ public final class ChessUtil {
 
                 //input is all clear and asked for draw
                 len3move = new Move(getSquare(board, beginString),getSquare(board, endString),true,' ');
-            if(grabPiece(board,len3move) == null){
+            if(grabPiece(board,len3move.getbeginLocation()) == null){
                 return invalidInput(player,board);
             }
             return len3move;
@@ -286,14 +286,14 @@ public final class ChessUtil {
 
     private static Square getSquare(Square[][] board, String locationString){
         int x = getNumFromChar(locationString.charAt(0));
-        int y = Character.getNumericValue(locationString.charAt(1));
-        return board[x][y];
+        int y = getRowNum(Character.getNumericValue(locationString.charAt(1)));
+        return board[y][x];
     }
 
-    public static Piece grabPiece(Square[][] board, Move move){
-        int col = move.getbeginLocation().getCol();
-        int row = move.getbeginLocation().getRow();
-        return board[getRowNum(col)][row].getPiece();
+    public static Piece grabPiece(Square[][] board, Square location){
+        int row = location.getRow();
+        int col = location.getCol();
+        return board[row][col].getPiece();
     }
 
 
