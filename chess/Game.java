@@ -39,16 +39,11 @@ public class Game {
      * If it's black's turn, black plays.
      */
     public void resume(){
-
-        if(white.getPlayerTurn()){
-            //it's white's turn.
-            white.playTurn();
-            setTurn(black, white);
-        } else {
-            //it's black's turn.
-            black.playTurn();
-            setTurn(white, black);
-        }
+        Player playerWhoWillPlayThisTurn = white.getPlayerTurn()? white : black;
+        Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
+        Move move = requestInput(playerWhoWillPlayThisTurn, board);
+        status = playerWhoWillPlayThisTurn.playTurn(board, move);
+        setTurn(playerWhoWillPlayNextTurn, playerWhoWillPlayThisTurn);
     }
 
     /**
@@ -115,7 +110,7 @@ public class Game {
     private void createSquares(){
         for(int i = 0; i < board.length; i++){
             for(int j = 0; j<board.length; j++){
-                board[i][j] = new Square();
+                board[i][j] = new Square(i,j);
             }
         }
     }

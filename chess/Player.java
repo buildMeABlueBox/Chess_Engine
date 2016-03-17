@@ -58,8 +58,10 @@ public class Player {
      * -Update Board accordingly
      *
      */
-    public void playTurn(){
+    public GameStatus playTurn(Square[][] board, Move move){
         //TODO: implement.
+
+        return GameStatus.PENDING;
     }
 
     public boolean getPlayerTurn(){

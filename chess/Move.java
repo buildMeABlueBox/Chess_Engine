@@ -1,4 +1,5 @@
 package chess;
+import static chess.ChessUtil.*;
 
 /**
  * Created by Abhijit on 2/29/16.
@@ -16,16 +17,16 @@ public class Move {
     private Square beginLocation;
     private Square endLocation;
     private boolean askedForDraw;
+    private char    promotionTo;
 
     public Move(){
 
     }
-    public Move(String userInput){
-        String[] inputs = userInput.split(" ");
-        askedForDraw = (inputs.length == 3 && inputs[2].
-                        equalsIgnoreCase("draw?"));
-
-        //TODO: initialize beginLocation and endLocation
+    public Move(Square beginningLocation, Square endLocation, boolean askedForDraw, char promotionTo){
+        beginLocation = beginningLocation;
+        this.endLocation = endLocation;
+        this.askedForDraw = askedForDraw;
+        this.promotionTo = promotionTo;
     }
 
     public Square getbeginLocation(){

@@ -15,7 +15,6 @@ public final class ChessUtil {
     }
 
     public static boolean checkPromotionChar(char c){
-        //TODO: MIGHT want to toUpperCase c? what if they put n instead of N. is that technically wrong?
         switch(c){
             default:
                 return false;
@@ -30,14 +29,14 @@ public final class ChessUtil {
         }
     }
 
-    public static void requestInput(Player player){
+    public static Move requestInput(Player player, Square[][] board){
         System.out.println(player.getPlayerColor().toString().substring(0, 1) +
                 player.getPlayerColor().toString().substring(1).toLowerCase()+ "'s move:");
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        checkInput(input, player);
+        return getUserInput(input, player, board);
     }
 
     /**
@@ -49,60 +48,58 @@ public final class ChessUtil {
      * If any of these do not match, the user is then asked for the input again.
      * @param input
      */
-    private static void checkInput(String input, Player player) {
+    private static Move getUserInput(String input, Player player, Square[][] board) {
         String[] individualInputs = input.split(" ");
+        String beginLocationString = individualInputs[0];
+        String endLocationString = individualInputs[1];
+        String promotionOrDraw = individualInputs[2];
         switch(individualInputs.length){
             default:
-                invalidInput(player);
-                return;
+                return invalidInput(player, board);
             case 2:
-                if(!isFileRank(individualInputs[0])) {
-                    invalidInput(player);
-                    return;
+                if(!isFileRank(beginLocationString)) {
+                    return invalidInput(player, board);
                 }
-                if(!isFileRank(individualInputs[1])) {
-                    invalidInput(player);
-                    return;
+                if(!isFileRank(endLocationString)) {
+                    return invalidInput(player, board);
                 }
                 //input is all clear
-                return;
+                char c = ' ';
+                return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
 
             case 3:
                 //check first two parts of input to see if they follow proper form
-                if(!isFileRank(individualInputs[0])) {;
-                    invalidInput(player);
-                    return;
+                if(!isFileRank(beginLocationString)) {;
+                    return invalidInput(player, board);
                 }
-                if(!isFileRank(individualInputs[1])) {
-                    invalidInput(player);
-                    return;
+                if(!isFileRank(endLocationString)) {
+                    return invalidInput(player, board);
                 }
 
                 //check third part to see if its going under a promotion (only if the size is 1)
-                if(individualInputs[2].length() == 1){
+                if(promotionOrDraw.length() == 1){
                     //size of 3rd individual input might be indicating promotion. if thats the case, check to see that the ending location has an 8 or a 1 in it.
-                    if(!checkPromotionChar(individualInputs[2].charAt(0))){
+                    char promotionChar = promotionOrDraw.charAt(0);
+                    if(!checkPromotionChar(promotionChar)){
                         //isn't a valid promotion
-                        invalidInput(player);
-                        return;
+                        return invalidInput(player, board);
                     }
-                    if(individualInputs[1].charAt(1) != '8' && individualInputs[1].charAt(1) != '1'){
+                    if(endLocationString.charAt(1) != '8' && endLocationString.charAt(1) != '1'){
                         //isn't 8 or 1 (indicating the piece -- hopefully a pawn -- isn't at the end of the board yet).
-                        invalidInput(player);
-                        return;
+                        return invalidInput(player, board);
                     }
-                    return;
+
+                    return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, promotionChar);
                 }
 
                 //see if the user requested a draw.
                 if(!individualInputs[2].equalsIgnoreCase("draw")){
                     //player did not ask for draw. its some random gibberish..
-                    invalidInput(player);
-                    return;
+                    return invalidInput(player, board);
                 }
 
-                //input is all clear
-                return;
+                //input is all clear and asked for draw
+                return new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),true,' ');
         }
     }
 
@@ -236,6 +233,25 @@ public final class ChessUtil {
     }
 
     /**
+     * given a beginning or end location input, get the file of the input.
+     *
+     * @param input
+     * @return first letter in input
+     */
+    public char getFile(String input){
+        return input.charAt(0);
+    }
+
+    /**
+     * given a beginning or end location input, get the rank of the input.
+     * @param input
+     * @return second letter in input
+     */
+    public int getRank(String input){
+        return Character.getNumericValue(input.charAt(1));
+    }
+
+    /**
      * prints ## if sq is black or "   " if white.
      * @param sq
      */
@@ -247,8 +263,14 @@ public final class ChessUtil {
         }
     }
 
-    private static void invalidInput(Player player){
+    private static Move invalidInput(Player player, Square [][] board){
         System.out.println("\ninvalid input. Please try again.\n");
-        requestInput(player);
+        return requestInput(player, board);
+    }
+
+    private static Square getSquare(Square[][] board, String locationString){
+        int x = getNumFromChar(locationString.charAt(0));
+        int y = Character.getNumericValue(locationString.charAt(1));
+        return board[x][y];
     }
 }
