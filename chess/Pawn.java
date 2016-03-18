@@ -28,9 +28,9 @@ public class Pawn extends Piece {
      * Pawn can move:
      * -1 space up
      * -2 spaces up if it hasn't moved from its original location
-     * -
      */
     public boolean isMoveValid(Move move, Square[][] board) {
+        Piece piece;
         Square beginLocation = move.getbeginLocation();
         Square endLocation = move.getEndLocation();
 
@@ -40,6 +40,8 @@ public class Pawn extends Piece {
         int beginLocationCol = beginLocation.getCol();
         int endLocationCol = endLocation.getCol();
 
+        piece = grabPiece(board, endLocation);
+
         if(tryingToMoveBackwards(grabPiece(board, move.getbeginLocation()), move)){
             // pawn is trying to move backwards
             return false;
@@ -47,16 +49,16 @@ public class Pawn extends Piece {
 
         if(wasMoved){
             //piece was moved before and now is trying to move up (can't have piece up)
-            if(endLocationCol == beginLocationCol && endLocationRow-beginLocationRow <= 1 && grabPiece(board, endLocation) == null){
+            if(endLocationCol == beginLocationCol && endLocationRow-beginLocationRow <= 1 && piece == null){
                 //same column, difference in row is 1, no piece in place of moving.
                 return true;
             }
 
-            if(endLocation == getDiagonalSquare(board, beginLocation, true) && grabPiece(board, endLocation) != null) {
+            if(endLocation == getDiagonalSquare(board, beginLocation, true) && piece != null && !capturingSameColor(piece,move)) {
                 //end location is right diagonal square and there is a piece to be killed.
                 return true;
 
-            } else if(endLocation == getDiagonalSquare(board, beginLocation, false) && grabPiece(board, endLocation) != null) {
+            } else if(endLocation == getDiagonalSquare(board, beginLocation, false) && piece != null && !capturingSameColor(piece,move)) {
                 //end location is left diagonal square and there is a piece to be killed.
                 return true;
             } else {
@@ -64,17 +66,17 @@ public class Pawn extends Piece {
                 return false;
             }
         }
-        if(endLocationCol == beginLocationCol && endLocationRow-beginLocationRow <= 2 && grabPiece(board, endLocation) == null){
+        if(endLocationCol == beginLocationCol && endLocationRow-beginLocationRow <= 2 && piece == null){
             //moving 1 or 2 spaces up, same column, no piece in the way
             return true;
         }
         //trying to kill piece of opponent diagonally when the piece wasn't moved.
 
-        if(endLocation == getDiagonalSquare(board, beginLocation, true) && grabPiece(board, endLocation) != null) {
+        if(endLocation == getDiagonalSquare(board, beginLocation, true) && piece != null && !capturingSameColor(piece,move)) {
             //end location is right diagonal square and there is a piece to be killed.
             return true;
 
-        } else if(endLocation == getDiagonalSquare(board, beginLocation, false) && grabPiece(board, endLocation) != null) {
+        } else if(endLocation == getDiagonalSquare(board, beginLocation, false) && piece != null && !capturingSameColor(piece,move)) {
             //end location is left diagonal square and there is a piece to be killed.
             return true;
         } else {

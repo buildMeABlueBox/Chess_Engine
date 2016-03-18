@@ -350,7 +350,12 @@ public final class ChessUtil {
                 diagonalRow = beginningSquare.getRow() + 1;
                 diagonalCol = beginningSquare.getCol() - 1;
             }
-            if(diagonalCol > 7 || diagonalCol > 7){
+            if(diagonalCol > 7 || diagonalRow > 7){
+                return null;
+            }
+
+            //TODO: if there are errors from this method, it might be this
+            if(diagonalCol< 0 || diagonalRow < 0){
                 return null;
             }
             return board[diagonalRow][diagonalCol];
@@ -366,6 +371,11 @@ public final class ChessUtil {
             if(diagonalCol < 1 || diagonalRow < 1){
                 return null;
             }
+            //TODO: if there are errors from this method, it might be this
+            if(diagonalCol > 7 || diagonalRow > 7){
+                return null;
+            }
+
             return board[diagonalRow][diagonalCol];
         }
     }
@@ -417,5 +427,13 @@ public final class ChessUtil {
 
     public static boolean sevenOrLess(int x){
         return x <= 7;
+    }
+
+    public static boolean capturingSameColor(Piece piece, Move move){
+        Piece pieceAtBeginningLocation = move.getbeginLocation().getPiece();
+        Color beginPieceColor = pieceAtBeginningLocation.getPieceColor();
+        Color endPieceColor = piece.getPieceColor();
+
+        return beginPieceColor==endPieceColor;
     }
 }
