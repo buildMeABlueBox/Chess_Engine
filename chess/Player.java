@@ -52,15 +52,52 @@ public class Player {
 
     /**
      * -Check if move is Valid
-     * -Moves piece if it is
+     * -Moves piece if it is valid
      * -gets a list of pieces of opponent the moved piece can kill after it has been moved
      * -checks if king of opponent can be killed
-     * -returns status depending on whether it is a check or checkmate.
+     * -returns status depending on whether it is a check, checkmate, stalemate, or pending.
      *
      */
     public GameStatus playTurn(Square[][] board, Move move){
         //TODO: implement.
-        return GameStatus.BLACK_WINS;
+        Square beginningSquare = move.getbeginLocation();
+        Piece piece = grabPiece(board, beginningSquare);
+
+        boolean canBeMoved = callSpecificMoveisValid(piece, board, move);
+
+        while(!canBeMoved){
+            move = invalidInput(this, board);
+            beginningSquare = move.getbeginLocation();
+            piece = grabPiece(board, beginningSquare);
+
+            //TODO: implement isMoveValid for Rook, Queen, King, Bishop, Knight
+            canBeMoved = callSpecificMoveisValid(piece, board, move);
+        }
+
+        //moves piece from its location to end location (considers if theres a piece to be taken)
+        //TODO: implement movePiece and if pawn, change wasMoved to true.
+        movePiece(board, piece, move);
+
+        printBoard(board);
+
+
+        //TODO: implement findGameStatus
+        GameStatus status = findGameStatus(board, piece);
+        return status;
+    }
+
+    private void movePiece(Square[][] board, Piece piece, Move move) {
+        int endLocationRow = move.getEndLocation().getRow();
+        int endLocationCol = move.getEndLocation().getCol();
+        int beginLocationRow = move.getbeginLocation().getRow();
+        int beginLocationCol = move.getbeginLocation().getCol();
+        board[beginLocationRow][beginLocationCol].setPiece(null);
+        if(piece.pieceType == PieceType.PAWN){
+            Pawn pawn = (Pawn) piece;
+            pawn.setWasMoved(true);
+            piece = pawn;
+        }
+        board[endLocationRow][endLocationCol].setPiece(piece);
     }
 
     public boolean getPlayerTurn(){
@@ -94,4 +131,5 @@ public class Player {
     public void setIsTurn(boolean isTurn) {
         this.isTurn = isTurn;
     }
+
 }

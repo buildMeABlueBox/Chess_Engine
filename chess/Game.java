@@ -46,8 +46,6 @@ public class Game {
         Player playerWhoWillPlayThisTurn = white.getPlayerTurn()? white : black;
         Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
 
-        printBoard(board);
-
         Move move = requestInput(playerWhoWillPlayThisTurn, board);
         status = playerWhoWillPlayThisTurn.playTurn(board, move);
 
@@ -62,6 +60,7 @@ public class Game {
     private void initialize(){
         createSquares();
         initializeBoard();
+        printBoard(board);
     }
 
 

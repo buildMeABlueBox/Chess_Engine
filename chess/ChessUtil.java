@@ -50,6 +50,7 @@ public final class ChessUtil {
      */
     private static Move getUserInput(String input, Player player, Square[][] board) {
         String[] individualInputs = input.split(" ");
+        Piece piece;
         switch(individualInputs.length){
             default:
                 return invalidInput(player, board);
@@ -66,7 +67,8 @@ public final class ChessUtil {
                 char c = ' ';
 
                 Move move = new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
-                if(grabPiece(board,move.getbeginLocation()) == null){
+                piece = grabPiece(board,move.getbeginLocation());
+                if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
                     return invalidInput(player,board);
                 }
                 return move;
@@ -98,7 +100,8 @@ public final class ChessUtil {
                     }
 
                     len3move = new Move(getSquare(board, beginString),getSquare(board, endString),false, promotionChar);
-                    if(grabPiece(board, len3move.getbeginLocation()) == null){
+                    piece = grabPiece(board,len3move.getbeginLocation());
+                    if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
                         return invalidInput(player,board);
                     }
                     return len3move;
@@ -112,9 +115,10 @@ public final class ChessUtil {
 
                 //input is all clear and asked for draw
                 len3move = new Move(getSquare(board, beginString),getSquare(board, endString),true,' ');
-            if(grabPiece(board,len3move.getbeginLocation()) == null){
-                return invalidInput(player,board);
-            }
+                piece = grabPiece(board,len3move.getbeginLocation());
+                if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
+                    return invalidInput(player,board);
+                }
             return len3move;
         }
     }
@@ -228,6 +232,7 @@ public final class ChessUtil {
      *
      */
     public static void printBoard(Square[][] board){
+        System.out.println();
         int rowNum = 8;
         //int count = 0;
         //int i = 0, j;
@@ -279,8 +284,8 @@ public final class ChessUtil {
         }
     }
 
-    private static Move invalidInput(Player player, Square [][] board){
-        System.out.println("\ninvalid input. Please try again.\n");
+    public static Move invalidInput(Player player, Square [][] board){
+        System.out.println("\nIllegal move, try again\n");
         return requestInput(player, board);
     }
 
@@ -294,6 +299,104 @@ public final class ChessUtil {
         int row = location.getRow();
         int col = location.getCol();
         return board[row][col].getPiece();
+    }
+
+    /**
+     * calls isMoveValid to the specific piece.
+     * @param piece
+     */
+    public static boolean callSpecificMoveisValid(Piece piece, Square[][] board, Move move){
+        switch (piece.getPieceType()){
+            default:
+                System.err.print("Shouldn't be seeing this in callSpecificMoveisValid..");
+                System.exit(1);
+            case ROOK:
+                Rook rook = (Rook) piece;
+                return rook.isMoveValid(move,board);
+            case KING:
+                King king = (King) piece;
+                return king.isMoveValid(move,board);
+            case QUEEN:
+                Queen queen = (Queen) piece;
+                return queen.isMoveValid(move,board);
+            case KNIGHT:
+                Knight knight = (Knight) piece;
+                return knight.isMoveValid(move,board);
+            case PAWN:
+                Pawn pawn = (Pawn) piece;
+                return pawn.isMoveValid(move,board);
+            case BISHOP:
+                Bishop bishop = (Bishop) piece;
+                return bishop.isMoveValid(move,board);
+        }
+    }
+
+
+    /**
+     * @param beginningSquare
+     * @param rightSquare
+     * @return diagonal square to the square that was passed in. which diagonal? depends on whether the right square was wanted. if it wasn't, return the left diagonal.
+     * returns null if square is out of bounds.
+     */
+    public static Square getDiagonalSquare(Square[][] board, Square beginningSquare, boolean rightSquare){
+        int diagonalRow;
+        int diagonalCol;
+        if(rightSquare){
+
+            if(beginningSquare.getPiece().getPieceColor() == Color.WHITE) {
+                diagonalRow = beginningSquare.getRow() - 1;
+                diagonalCol = beginningSquare.getCol() + 1;
+            } else {
+                diagonalRow = beginningSquare.getRow() + 1;
+                diagonalCol = beginningSquare.getCol() - 1;
+            }
+            if(diagonalCol > 7 || diagonalCol > 7){
+                return null;
+            }
+            return board[diagonalRow][diagonalCol];
+        } else {
+            if(beginningSquare.getPiece().getPieceColor() == Color.WHITE) {
+                diagonalRow = beginningSquare.getRow() - 1;
+                diagonalCol = beginningSquare.getCol() - 1;
+            } else {
+                diagonalRow = beginningSquare.getRow() + 1;
+                diagonalCol = beginningSquare.getCol() + 1;
+            }
+
+            if(diagonalCol < 1 || diagonalRow < 1){
+                return null;
+            }
+            return board[diagonalRow][diagonalCol];
+        }
+    }
+    public static GameStatus findGameStatus(Square[][] board, Piece piece){
+        //TODO: implement
+        return GameStatus.PENDING;
+    }
+
+    public static boolean tryingToMoveBackwards(Piece piece, Move move){
+        if(piece.getPieceColor() == Color.WHITE){
+            //white movement
+            if( colsSame(move) && move.getEndLocation().getRow() > move.getbeginLocation().getRow() ){
+                //trying to move backwards
+                return true;
+            }else{
+                return false;
+            }
+        } else {
+            //black movement
+
+            if( colsSame(move) && move.getEndLocation().getRow() < move.getbeginLocation().getRow() ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+
+    private static boolean colsSame(Move move){
+        return move.getbeginLocation().getCol() == move.getEndLocation().getCol();
     }
 
 
