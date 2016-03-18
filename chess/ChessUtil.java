@@ -395,9 +395,19 @@ public final class ChessUtil {
     }
 
 
-    private static boolean colsSame(Move move){
+    public static boolean colsSame(Move move){
         return move.getbeginLocation().getCol() == move.getEndLocation().getCol();
     }
 
+    public static boolean rowsSame(Move move){
+        return move.getbeginLocation().getRow() == move.getEndLocation().getRow();
+    }
 
+    public static boolean isValidDistance(Move move, boolean rowsSame){
+        if(rowsSame){
+            return move.getEndLocation().getCol()-move.getbeginLocation().getCol() <= 7;
+        } else {
+            return move.getEndLocation().getRow()-move.getbeginLocation().getRow() <= 7;
+        }
+    }
 }
