@@ -410,4 +410,12 @@ public final class ChessUtil {
             return move.getEndLocation().getRow()-move.getbeginLocation().getRow() <= 7;
         }
     }
+
+    public static boolean zeroOrMore(int x){
+        return x >= 0;
+    }
+
+    public static boolean sevenOrLess(int x){
+        return x <= 7;
+    }
 }
