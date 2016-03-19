@@ -98,6 +98,7 @@ public class Player {
             piece = pawn;
         }
         board[endLocationRow][endLocationCol].setPiece(piece);
+        piece.setLocation(board[endLocationRow][endLocationCol]);
     }
 
     public boolean getPlayerTurn(){

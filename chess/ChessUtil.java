@@ -1,5 +1,7 @@
 package chess;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -415,9 +417,9 @@ public final class ChessUtil {
 
     public static boolean isValidDistance(Move move, boolean rowsSame){
         if(rowsSame){
-            return move.getEndLocation().getCol()-move.getbeginLocation().getCol() <= 7;
+            return sevenOrLess(move.getEndLocation().getCol()-move.getbeginLocation().getCol());
         } else {
-            return move.getEndLocation().getRow()-move.getbeginLocation().getRow() <= 7;
+            return sevenOrLess(move.getEndLocation().getRow()-move.getbeginLocation().getRow());
         }
     }
 
@@ -435,5 +437,24 @@ public final class ChessUtil {
         Color endPieceColor = piece.getPieceColor();
 
         return beginPieceColor==endPieceColor;
+    }
+
+    public static boolean isWithinBounds(int row, int col){
+        return zeroOrMore(row) && zeroOrMore(col) && sevenOrLess(row) && sevenOrLess(col);
+    }
+
+    public static ArrayList<Piece> grabOpposingPlayerPieces(Square[][] board, Move move){
+        ArrayList<Piece> opposingPlayerPieces = new ArrayList<Piece>();
+        Color playerColor = move.getbeginLocation().getPiece().getPieceColor();
+        Color opposingColor = playerColor == Color.BLACK? Color.WHITE : Color.BLACK;
+        for(Square[] sqArr : board){
+            for(Square sq : sqArr){
+                Piece piece = sq.getPiece();
+                if(piece != null && piece.getPieceColor() == opposingColor){
+                    opposingPlayerPieces.add(sq.getPiece());
+                }
+            }
+        }
+        return opposingPlayerPieces;
     }
 }

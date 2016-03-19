@@ -56,7 +56,7 @@ public class Bishop extends Piece {
             possCol = beginCol;
             possCol++;
             possRow--;
-            while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+            while(isWithinBounds(possRow,possCol)){
                 //north east diagonal row - 1 col + 1
                 if(board[possRow--][possCol++].getPiece() != null){
                     return false;
@@ -70,7 +70,7 @@ public class Bishop extends Piece {
             possCol = beginCol;
             possCol--;
             possRow--;
-            while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+            while(isWithinBounds(possRow,possCol)){
                 //north west diagonal row - 1 col - 1
                 if(board[possRow--][possCol--].getPiece() != null){
                     return false;
@@ -85,7 +85,7 @@ public class Bishop extends Piece {
             possCol = beginCol;
             possRow++;
             possCol--;
-            while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possCol) && sevenOrLess(possCol)){
+            while(isWithinBounds(possRow,possCol)){
                 //south west diagonal -- row + 1 col -1
                 if(board[possRow++][possCol--].getPiece() != null){
                     return false;
@@ -102,7 +102,7 @@ public class Bishop extends Piece {
 
             possCol++;
             possRow++;
-            while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+            while(isWithinBounds(possRow,possCol)){
                 //south east diagonal -- row + 1 col + 1
                 if(board[possRow++][possCol++].getPiece() != null){
                     return false;
@@ -122,7 +122,7 @@ public class Bishop extends Piece {
 
         possRow++;
         possCol--;
-        while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+        while(isWithinBounds(possRow,possCol)){
             //south west diagonal -- row + 1 col -1
             possibleMoves.add(board[possRow++][possCol--]);
         }
@@ -132,7 +132,7 @@ public class Bishop extends Piece {
 
         possCol++;
         possRow++;
-        while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+        while(isWithinBounds(possRow,possCol)){
             //south east diagonal -- row + 1 col + 1
             possibleMoves.add(board[possRow++][possCol++]);
         }
@@ -141,7 +141,7 @@ public class Bishop extends Piece {
         possCol = beginLocation.getCol();
         possCol--;
         possRow--;
-        while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+        while(isWithinBounds(possRow,possCol)){
             //north west diagonal row - 1 col - 1
             possibleMoves.add(board[possRow--][possCol--]);
         }
@@ -150,7 +150,7 @@ public class Bishop extends Piece {
         possCol = beginLocation.getCol();
         possCol++;
         possRow--;
-        while(zeroOrMore(possRow) && zeroOrMore(possCol) && sevenOrLess(possRow) && sevenOrLess(possCol)){
+        while(isWithinBounds(possRow,possCol)){
             //north east diagonal row - 1 col + 1
             possibleMoves.add(board[possRow--][possCol++]);
         }

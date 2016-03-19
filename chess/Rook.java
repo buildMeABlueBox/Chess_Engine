@@ -73,7 +73,7 @@ public class Rook extends Piece {
             smallerNum = beginCol > endCol? endCol : beginCol;
 
             for(int i =biggerNum-1; i>smallerNum; i--){
-                //not checking the ending column because a piece might be there but if it is, its to kill.
+                //not checking the ending column because a piece might be there but if it is, its to be killed.
                 if(board[beginRow][i].getPiece() != null){
                     return true;
                 }

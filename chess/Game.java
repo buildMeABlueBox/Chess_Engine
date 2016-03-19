@@ -88,24 +88,36 @@ public class Game {
         for(i = 0; i<board.length; i++){
             num = color == Color.WHITE? getRowNum(2): getRowNum(7);
             board[num][i].setPiece(pieces[i]);
+            pieces[i].setLocation(board[num][i]);
         }
         //place 2 rooks
         num = color == Color.WHITE? getRowNum(1): getRowNum(8);
+        pieces[i].setLocation(board[num][getNumFromChar('a')]);
         board[num][getNumFromChar('a')].setPiece(pieces[i++]);
+
+        pieces[i].setLocation(board[num][getNumFromChar('h')]);
         board[num][getNumFromChar('h')].setPiece(pieces[i++]);
 
         //place 2 bishops
+        pieces[i].setLocation(board[num][getNumFromChar('f')]);
         board[num][getNumFromChar('f')].setPiece(pieces[i++]);
+
+        pieces[i].setLocation(board[num][getNumFromChar('c')]);
         board[num][getNumFromChar('c')].setPiece(pieces[i++]);
 
         //place 2 knights
+        pieces[i].setLocation(board[num][getNumFromChar('g')]);
         board[num][getNumFromChar('g')].setPiece(pieces[i++]);
+
+        pieces[i].setLocation(board[num][getNumFromChar('b')]);
         board[num][getNumFromChar('b')].setPiece(pieces[i++]);
 
         //place 1 queen
+        pieces[i].setLocation(board[num][getNumFromChar('d')]);
         board[num][getNumFromChar('d')].setPiece(pieces[i++]);
 
         //place 1 king
+        pieces[i].setLocation(board[num][getNumFromChar('e')]);
         board[num][getNumFromChar('e')].setPiece(pieces[i]);
 
     }
