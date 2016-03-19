@@ -70,7 +70,7 @@ public class Player {
             beginningSquare = move.getbeginLocation();
             piece = grabPiece(board, beginningSquare);
 
-            //TODO: implement isMoveValid for Rook, Queen, King, Bishop, Knight
+            //TODO: implement isMoveValid for Queen, King
             canBeMoved = callSpecificMoveisValid(piece, board, move);
         }
 

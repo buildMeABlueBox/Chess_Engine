@@ -5,6 +5,7 @@ package chess;
  */
 public class Queen extends Piece {
     public Queen() {
+
     }
 
     public Queen(Color pieceColor, PieceType pieceType) {
@@ -13,7 +14,9 @@ public class Queen extends Piece {
 
     @Override
     public boolean isMoveValid(Move move, Square[][] board) {
-        //TODO: implement specific to queen movement.
-        return false;
+        Piece bishop = new Bishop();
+        Piece rook = new Rook();
+
+        return bishop.isMoveValid(move, board) || rook.isMoveValid(move, board);
     }
 }
