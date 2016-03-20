@@ -68,16 +68,6 @@ public class Player {
             canBeMoved = isSavedFromCheck(board, move, currentStatus);
         }
 
-//        if(this.getPlayerColor() == Color.WHITE && currentStatus == GameStatus.WHITE_IN_CHECK &&
-//                piece.getPieceType() != PieceType.KING ){
-//            //color is white AND is in check AND the piece isn't a king TODO: might want to consider piecetype being white?
-//            canBeMoved = false;
-//        }else if(this.getPlayerColor() == Color.BLACK && currentStatus == GameStatus.BLACK_IN_CHECK &&
-//                piece.getPieceType() != PieceType.KING ){
-//            //color is black AND is in check AND the piece isn't a king TODO: might want to consider piecetype being white?
-//            canBeMoved = false;
-//        }
-
 
         while(!canBeMoved){
             move = invalidInput(this, board);
@@ -88,20 +78,6 @@ public class Player {
                 canBeMoved = isSavedFromCheck(board,move,currentStatus);
                 continue;
             }
-
-//            if(this.getPlayerColor() == Color.WHITE && currentStatus == GameStatus.WHITE_IN_CHECK &&
-//                    piece.getPieceType() != PieceType.KING ){
-//                //color is white AND is in check AND the piece isn't a king TODO: might want to consider piecetype being white?
-//                canBeMoved = false;
-//                continue;
-//
-//            }else if(this.getPlayerColor() == Color.BLACK && currentStatus == GameStatus.BLACK_IN_CHECK &&
-//                    piece.getPieceType() != PieceType.KING ){
-//                //color is black AND is in check AND the piece isn't a king TODO: might want to consider piecetype being white?
-//                canBeMoved = false;
-//                continue;
-//            }
-
             canBeMoved = callSpecificMoveisValid(piece, board, move);
         }
 
