@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -69,7 +68,7 @@ public final class ChessUtil {
                 char c = ' ';
 
                 Move move = new Move(getSquare(board, beginLocationString),getSquare(board, endLocationString),false, c);
-                piece = grabPiece(board,move.getbeginLocation());
+                piece = grabPieceByLocation(board, move.getbeginLocation());
                 if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
                     return invalidInput(player,board);
                 }
@@ -102,7 +101,7 @@ public final class ChessUtil {
                     }
 
                     len3move = new Move(getSquare(board, beginString),getSquare(board, endString),false, promotionChar);
-                    piece = grabPiece(board,len3move.getbeginLocation());
+                    piece = grabPieceByLocation(board, len3move.getbeginLocation());
                     if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
                         return invalidInput(player,board);
                     }
@@ -117,7 +116,7 @@ public final class ChessUtil {
 
                 //input is all clear and asked for draw
                 len3move = new Move(getSquare(board, beginString),getSquare(board, endString),true,' ');
-                piece = grabPiece(board,len3move.getbeginLocation());
+                piece = grabPieceByLocation(board, len3move.getbeginLocation());
                 if(piece == null || piece.getPieceColor() != player.getPlayerColor()){
                     return invalidInput(player,board);
                 }
@@ -227,6 +226,31 @@ public final class ChessUtil {
     }
 
     /**
+     *
+     * p for pawn,
+     * R for rook,
+     * B for bishop,
+     * K for king,
+     * N for knight,
+     * Q for queen
+     * @param promotionChar - character pawn will be promoted to
+     */
+    public static PieceType getPieceType(char promotionChar){
+        switch (promotionChar){
+            default:
+                return PieceType.QUEEN;
+            case 'R':
+                return PieceType.ROOK;
+            case 'Q':
+                return PieceType.QUEEN;
+            case 'N':
+                return PieceType.KNIGHT;
+            case 'B':
+                return PieceType.BISHOP;
+        }
+    }
+
+    /**
      * prints the board.
      *
      * prints ## on black squares and leaves white squares empty.
@@ -236,10 +260,7 @@ public final class ChessUtil {
     public static void printBoard(Square[][] board){
         System.out.println();
         int rowNum = 8;
-        //int count = 0;
-        //int i = 0, j;
         for(Square[] sqArr: board){
-            //j = i++%2;
             for(Square sq : sqArr){
                 Piece piece = sq.getPiece();
                 if(piece != null){
@@ -297,10 +318,22 @@ public final class ChessUtil {
         return board[y][x];
     }
 
-    public static Piece grabPiece(Square[][] board, Square location){
+    public static Piece grabPieceByLocation(Square[][] board, Square location){
         int row = location.getRow();
         int col = location.getCol();
         return board[row][col].getPiece();
+    }
+
+    public static Piece grabPieceByColorAndType(Square[][] board, Color color, PieceType type){
+        for(Square[] squares : board){
+            for(Square square : squares){
+                Piece piece = square.getPiece();
+                if(piece != null && piece.getPieceColor() == color && piece.getPieceType() == type){
+                    return square.getPiece();
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -383,7 +416,16 @@ public final class ChessUtil {
     }
     public static GameStatus findGameStatus(Square[][] board, Piece piece){
         //TODO: implement
-        return GameStatus.PENDING;
+        Color currentPlayerColor = piece.getPieceColor();
+        Color possibleCheckedPlayerColor = currentPlayerColor == Color.BLACK? Color.WHITE : Color.BLACK;
+        if(opposingKingInCheck(board,piece)){
+            if(possibleCheckedPlayerColor == Color.BLACK) {
+                return GameStatus.BLACK_IN_CHECK;
+            } else {
+                return GameStatus.WHITE_IN_CHECK;
+            }
+        }
+        else return GameStatus.PENDING;
     }
 
     public static boolean tryingToMoveBackwards(Piece piece, Move move){
@@ -443,10 +485,14 @@ public final class ChessUtil {
         return zeroOrMore(row) && zeroOrMore(col) && sevenOrLess(row) && sevenOrLess(col);
     }
 
-    public static ArrayList<Piece> grabOpposingPlayerPieces(Square[][] board, Move move){
+    /**
+     * @param board
+     * @param color - color of piece (not opposing piece)
+     * @return list of opposing pieces by opposing player
+     */
+    public static ArrayList<Piece> grabOpposingPlayerPieces(Square[][] board, Color color){
         ArrayList<Piece> opposingPlayerPieces = new ArrayList<Piece>();
-        Color playerColor = move.getbeginLocation().getPiece().getPieceColor();
-        Color opposingColor = playerColor == Color.BLACK? Color.WHITE : Color.BLACK;
+        Color opposingColor = color == Color.BLACK? Color.WHITE : Color.BLACK;
         for(Square[] sqArr : board){
             for(Square sq : sqArr){
                 Piece piece = sq.getPiece();
@@ -456,5 +502,181 @@ public final class ChessUtil {
             }
         }
         return opposingPlayerPieces;
+    }
+
+    /**
+     *
+     * @param board
+     * @param piece - piece that was moved and might be checking square
+     * @return true if the piece that was moved can move to the king's position
+     */
+    public static boolean opposingKingInCheck(Square[][] board, Piece piece){
+        //get opposing color king
+        ArrayList<Piece> opposingPieces = grabOpposingPlayerPieces(board, piece.getPieceColor());
+        Piece oppKing = null;
+        for(Piece oppPiece : opposingPieces){
+            if(oppPiece.getPieceType() == PieceType.KING){
+                oppKing = oppPiece;
+                break;
+            }
+        }
+        if(oppKing == null){
+            //will never happen.
+            return false;
+        }
+
+        Square kingLocation = oppKing.getLocation();
+        if(piece.isMoveValid(new Move(piece.getLocation(),kingLocation,false,' '),board)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * check for reaching end of board for a pawn
+     * @param color - color of pawn
+     * @param endLocationRow - should be 0 or 7
+     * @return true if it is ready for promotion
+     */
+    public static boolean reachingEnd(Color color, int endLocationRow){
+        if(color == Color.WHITE){
+            return endLocationRow == 0;
+
+        } else {
+            return endLocationRow == 7;
+        }
+    }
+
+    public static boolean statusIsCheck(GameStatus status){
+        return status == GameStatus.BLACK_IN_CHECK || status == GameStatus.WHITE_IN_CHECK;
+    }
+
+    public static boolean isSavedFromCheck(Square[][] board, Move move, GameStatus status){
+
+        //grab piece that's trying to move
+        Piece piece = grabPieceByLocation(board, move.getbeginLocation());
+        if(piece == null){
+            return false;
+        }
+        //see if the way the piece is moving is valid
+        boolean moveIsValid = callSpecificMoveisValid(piece, board, move);
+        if(!moveIsValid){
+            return false;
+        }
+        //move piece to location.
+        Square pieceOrigLocation = piece.getLocation();
+        movePiece(board, piece, move);
+        Move moveBackToOriginalLocation = new Move(piece.getLocation(),pieceOrigLocation,false, ' ');
+        Piece checkedKing;
+
+        //king is black or white depending on status
+        checkedKing = status == GameStatus.BLACK_IN_CHECK? grabPieceByColorAndType(board, Color.BLACK, PieceType.KING) : grabPieceByColorAndType(board, Color.WHITE, PieceType.KING);
+
+        if(checkedKing==null){
+            //never should happen
+            return false;
+        }
+
+        boolean kingIsInCheck = putInCheck(board, new Move(piece.getLocation(), checkedKing.getLocation(), false, ' '));
+
+        //for some reason when putInCheck is called, the king's color changes to the opposite color. this reverts it.
+        if(status == GameStatus.BLACK_IN_CHECK){
+            checkedKing.setPieceColor(Color.BLACK);
+        } else {
+            checkedKing.setPieceColor(Color.WHITE);
+        }
+
+        if(kingIsInCheck){
+            //moving the piece was a bad move.
+            movePiece(board, piece, moveBackToOriginalLocation);
+            return false;
+        } else {
+            movePiece(board, piece, moveBackToOriginalLocation);
+            return true;
+        }
+    }
+
+    public static void movePiece(Square[][] board, Piece piece, Move move) {
+        int endLocationRow = move.getEndLocation().getRow();
+        int endLocationCol = move.getEndLocation().getCol();
+        int beginLocationRow = move.getbeginLocation().getRow();
+        int beginLocationCol = move.getbeginLocation().getCol();
+        board[beginLocationRow][beginLocationCol].setPiece(null);
+        if(piece.getPieceType() == PieceType.PAWN){
+            Pawn pawn = (Pawn) piece;
+            pawn.setWasMoved(true);
+            if(reachingEnd(piece.getPieceColor(), endLocationRow)){
+                //pawn is heading to end of board.. check for promotion.. if no promotion listed.. set piece to queen.
+                if(move.getPromotionTo() == ' '){
+                    piece.setPieceType(PieceType.QUEEN);
+                } else {
+                    piece.setPieceType(getPieceType(move.getPromotionTo()));
+                }
+
+            }else {
+                piece = pawn;
+            }
+        }
+        board[endLocationRow][endLocationCol].setPiece(piece);
+        piece.setLocation(board[endLocationRow][endLocationCol]);
+    }
+
+    /**
+     * gets all the pieces for the opposing player and for each piece, calls their isMoveValid to the ending location of where the square will be
+     * if it returns true for any of the pieces, then that means the opposing player can move their piece there and kill the king. Which shouldn't
+     * happen.
+     *
+     * if a king is killing a piece by moving to its end location, change the color of that piece to the opposite color.
+     * if a king is moving and not killing a piece, put a new piece there with the opposite color.
+     *
+     * @param board
+     * @param move - contains the ending location of the square where the king will be
+     * @return true if isMoveValid for any of the pieces is true. false otherwise
+     */
+    public static boolean putInCheck(Square[][] board, Move move){
+        ArrayList<Piece> opposingPlayerPieces = grabOpposingPlayerPieces(board,move.getbeginLocation().getPiece().getPieceColor());
+        Piece endLocPiece = grabPieceByLocation(board, move.getEndLocation());
+        if(endLocPiece!= null) {
+            //piece is at the spot where king wants to move (king will kill piece)
+
+            //color of player
+            Color pieceColorMem = move.getEndLocation().getPiece().getPieceColor();
+
+            //color of opposing piece
+            Color oppPiece = pieceColorMem == Color.BLACK? Color.WHITE : Color.BLACK;
+
+            //set the piece color to the color of player
+            board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].getPiece().setPieceColor(pieceColorMem);
+
+            //see if opposing pieces can kill piece
+            for (Piece piece : opposingPlayerPieces) {
+                if (piece.isMoveValid(new Move(piece.getLocation(), move.getEndLocation(), false, ' '), board)) {
+                    //set piece that was going to be killed back to its original piece color
+                    board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].getPiece().setPieceColor(oppPiece);
+                    return true;
+                }
+            }
+            //set piece that was going to be killed back to its original piece color
+            board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].getPiece().setPieceColor(oppPiece);
+            return false;
+        } else {
+            //piece is null. so create a piece to be placed in the ending location and give it the opposite players color.
+            endLocPiece = new Pawn();
+            //get original piece color
+            Color beginLocPieceCol = move.getbeginLocation().getPiece().getPieceColor();
+            //set color to the piece
+            endLocPiece.setPieceColor(beginLocPieceCol);
+            //place piece in the end location
+            board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].setPiece(endLocPiece);
+            //see for any of the opposing color pieces, if they can kill the piece that's been placed there.
+            for (Piece piece : opposingPlayerPieces) {
+                if (piece.isMoveValid(new Move(piece.getLocation(), move.getEndLocation(), false, ' '), board)) {
+                    board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].setPiece(null);
+                    return true;
+                }
+            }
+            board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].setPiece(null);
+            return false;
+        }
     }
 }

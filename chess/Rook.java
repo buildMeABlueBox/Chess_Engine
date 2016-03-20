@@ -46,7 +46,7 @@ public class Rook extends Piece {
                 return false;
             }
         }
-        Piece piece = grabPiece(board, move.getEndLocation());
+        Piece piece = grabPieceByLocation(board, move.getEndLocation());
 
         if(piece != null && capturingSameColor(piece, move)){
             return false;

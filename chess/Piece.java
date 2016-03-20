@@ -19,9 +19,9 @@ package chess;
  * piece is such a funny word. pie.. ce. he he..
  */
 public abstract class Piece {
-    Color pieceColor;
-    Square location;
-    PieceType pieceType;
+    private Color pieceColor;
+    private Square location;
+    private PieceType pieceType;
 
     public Piece(){
 

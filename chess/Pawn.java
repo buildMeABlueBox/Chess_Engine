@@ -40,9 +40,9 @@ public class Pawn extends Piece {
         int beginLocationCol = beginLocation.getCol();
         int endLocationCol = endLocation.getCol();
 
-        piece = grabPiece(board, endLocation);
+        piece = grabPieceByLocation(board, endLocation);
 
-        if(tryingToMoveBackwards(grabPiece(board, move.getbeginLocation()), move)){
+        if(tryingToMoveBackwards(grabPieceByLocation(board, move.getbeginLocation()), move)){
             // pawn is trying to move backwards
             return false;
         }

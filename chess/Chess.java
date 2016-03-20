@@ -37,9 +37,11 @@ public class Chess {
     public static boolean keepPlaying(GameStatus gameStatus){
         switch(gameStatus){
             case WHITE_IN_CHECK:
+                System.out.println("check\n");
                 return true;
 
             case BLACK_IN_CHECK:
+                System.out.println("check\n");
                 return true;
 
             case PENDING:

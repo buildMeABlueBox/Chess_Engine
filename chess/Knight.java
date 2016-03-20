@@ -17,8 +17,8 @@ public class Knight extends Piece{
     @Override
     public boolean isMoveValid(Move move, Square[][] board) {
         ArrayList<Square> possibleLocations = getPossibleLocations(board, move.getbeginLocation());
-        Piece pieceAtEnd = grabPiece(board, move.getEndLocation());
-        Piece pieceAtBeginning = grabPiece(board, move.getbeginLocation());
+        Piece pieceAtEnd = grabPieceByLocation(board, move.getEndLocation());
+        Piece pieceAtBeginning = grabPieceByLocation(board, move.getbeginLocation());
         if(pieceAtEnd == null){
             return possibleLocations.contains(move.getEndLocation());
         }else {

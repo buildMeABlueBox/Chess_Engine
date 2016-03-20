@@ -47,7 +47,7 @@ public class Game {
         Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
 
         Move move = requestInput(playerWhoWillPlayThisTurn, board);
-        status = playerWhoWillPlayThisTurn.playTurn(board, move);
+        status = playerWhoWillPlayThisTurn.playTurn(board, move, status);
 
         setTurn(playerWhoWillPlayNextTurn, playerWhoWillPlayThisTurn);
     }
