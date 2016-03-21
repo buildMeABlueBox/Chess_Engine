@@ -3,7 +3,8 @@ package chess;
 import static chess.ChessUtil.*;
 
 /**
- * Created by Abhijit on 3/1/16.
+ * This class is a representation of a pawn in chess.
+ * @author Abhijit
  */
 public class Pawn extends Piece {
     public boolean getWasMoved() {

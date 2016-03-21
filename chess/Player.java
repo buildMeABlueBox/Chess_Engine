@@ -4,11 +4,10 @@ import static chess.ChessUtil.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Abhijit on 2/29/16.
- */
 
 /**
+ * A representation of a player in the game of chess.
+ * @author Abhijit
  * A player has:
  * -pieces
  * -a color
@@ -58,6 +57,11 @@ public class Player {
      * -checks if king of opponent can be killed
      * -returns status depending on whether it is a check, checkmate, stalemate, or pending.
      *
+     * @param board - current state of the board
+     * @param currentStatus - current status of the game
+     * @param move - the move that was given by the player
+     *
+     * @return GameStatus depending on the status of the game.
      */
     public GameStatus playTurn(Square[][] board, Move move, GameStatus currentStatus){
         //TODO: implement

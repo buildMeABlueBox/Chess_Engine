@@ -1,6 +1,9 @@
 package chess;
 
-
+/**
+ * Main chess class that controls the game.
+ *@author Abhijit
+ */
 public class Chess {
 
 

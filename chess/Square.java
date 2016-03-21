@@ -1,15 +1,14 @@
 package chess;
 
 /**
- * Created by Abhijit on 2/29/16.
- */
-
-/**
- * A board is comprised of squares. A square has:
+ * This class is a representation of a square on a board in chess.
+ * A board is comprised of squares.
+ * A square has:
  * - A color (WHITE so print nothing, BLACK means print ## -- unless there is a piece on the square of course..)
  * - A column (int even though it is given in letters from a- h but thats why we have the function getNumFromChar in chessUtil class)
  * - A row (int)
  * - A reference to the piece.
+ * @author Abhijit
  */
 public class Square {
     private int row;

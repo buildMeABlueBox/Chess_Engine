@@ -11,12 +11,12 @@ package chess;
  * because interface makes all fields final and static
  * which is not what we want.
  *
+ * @author Abhijit
+ *
  * Each Piece has:
  * -A color associated with it (WHITE or BLACK)
  * -A location on the board.
  *
- *
- * piece is such a funny word. pie.. ce. he he..
  */
 public abstract class Piece {
     private Color pieceColor;

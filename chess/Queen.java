@@ -1,7 +1,8 @@
 package chess;
 
 /**
- * Created by Abhijit on 3/1/16.
+ * This class is a representation of a Queen in chess.
+ * @author Abhijit
  */
 public class Queen extends Piece {
     public Queen() {

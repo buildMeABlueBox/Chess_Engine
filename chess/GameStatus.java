@@ -5,7 +5,7 @@ package chess;
  */
 
 /**
- * Status of a game.
+ * Status of a game that is in play.
  *
  * Has:
  * -PENDING (meaning the game is still resuming so there is no result yet.)
@@ -16,7 +16,7 @@ package chess;
  * -WHITE_IN_CHECK
  * -BLACK_IN_CHECK
  *
- *
+ *@author Abhijit
  *
  */
 public enum GameStatus {

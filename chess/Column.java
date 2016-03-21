@@ -1,7 +1,8 @@
 package chess;
 
 /**
- * Created by Abhijit on 2/29/16.
+ * Class for enumeration to represent the columns.
+ * @author Abhijit
  */
 public enum Column {
     A,

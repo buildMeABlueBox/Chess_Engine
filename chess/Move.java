@@ -7,8 +7,11 @@ import static chess.ChessUtil.*;
 
 /**
  * This class holds the information the player enters to move
- * it's pieces. It has:
+ * it's pieces.
  *
+ * @author Abhijit
+ *
+ * It has:
  * - A beginning location to pick the piece from .
  * - An ending location to place the piece.
  * - A boolean for whether the player asked for a draw or not.

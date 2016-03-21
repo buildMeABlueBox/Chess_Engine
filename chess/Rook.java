@@ -1,7 +1,8 @@
 package chess;
 import static chess.ChessUtil.*;
 /**
- * Created by Abhijit on 3/1/16.
+ * This class is a representation of a rook in chess.
+ * @author Abhijit
  */
 public class Rook extends Piece {
     private boolean wasMoved;

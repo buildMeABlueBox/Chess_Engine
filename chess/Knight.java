@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import static chess.ChessUtil.*;
 
 /**
- * Created by Abhijit on 3/1/16.
+ * This class is a representation of a Knight in chess.
+ * @author Abhijit
  */
 public class Knight extends Piece{
     public Knight() {

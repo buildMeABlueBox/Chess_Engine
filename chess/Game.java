@@ -8,12 +8,12 @@ import static chess.ChessUtil.*;
 
 /**
  * The game controller class.
+ * @author Abhijit
  * A game has:
  * - a board
  * - 2 players
  * - an GameStatus
  *
- * --- add more if needed.
  */
 public class Game {
     private final Square[][] board = new Square[8][8];

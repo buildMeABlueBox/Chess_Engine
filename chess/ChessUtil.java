@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Created by Abhijit on 3/15/16.
- *
+ * A utility method holder class for all methods used throughout chess.
+ *@author Abhijit
  * Utility class for all methods that are stateless.
  * final class so runtime is more efficient.
  */
@@ -188,6 +188,7 @@ public final class ChessUtil {
      * just get the difference.
      *
      * @param rowNumWanted - the row num that the user wanted to get on the board
+     * @return - integer of row num that relates to the board
      */
     public static int getRowNum(int rowNumWanted){
         return 8-rowNumWanted;
@@ -267,6 +268,8 @@ public final class ChessUtil {
      * N for knight,
      * Q for queen
      * @param promotionChar - character pawn will be promoted to
+     * @return PieceType of the character that pawn is trying to be promoted to
+     *
      */
     public static PieceType getPieceType(char promotionChar){
         switch (promotionChar){
@@ -751,7 +754,7 @@ public final class ChessUtil {
 
     /**
      *
-     * @param board
+     * @param board - current state of board
      * @param move - contains move of piece moving that might block check
      * @param status - status of game
      * @return true if the move of the piece blocks the king from being checked or moves the king out of check.

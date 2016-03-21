@@ -1,8 +1,5 @@
 package chess;
 
-/**
- * Created by Abhijit on 2/29/16.
- */
 
 /**
  * Enumeration to use when identifying a piece. much easier
@@ -14,6 +11,8 @@ package chess;
  * if(piece.PieceType == PieceType.ROOK)
  *
  * latter is better.
+ *
+ * @author Abhijit
  *
  */
 public enum PieceType {
