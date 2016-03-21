@@ -937,16 +937,12 @@ public final class ChessUtil {
         col = endingLocation.getCol();
 
         //pawn that's about to be killed
-        Piece pawnToBeKilled = grabPieceByLocation(board, board[row][col]);
+        Pawn pawnToBeKilled = (Pawn)grabPieceByLocation(board, board[row][col]);
 
-        if(pawnToBeKilled == null || pawnToBeKilled.getPieceColor() != pawnToBeKilledColor){
+        if(pawnToBeKilled == null || pawnToBeKilled.getPieceColor() != pawnToBeKilledColor || !pawnToBeKilled.doubleJumped()){
             return false;
         }
 
         return true;
-    }
-
-    public static boolean oneOrTwo(int x){
-        return x == 1 || x == 2;
     }
 }

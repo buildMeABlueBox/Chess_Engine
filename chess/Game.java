@@ -49,28 +49,29 @@ public class Game {
         Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
 
         Move move = requestInput(playerWhoWillPlayThisTurn, board);
-        if(previouslyMovedWhitePawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE){
-            previouslyMovedWhitePawn.setDoubleJumped(false);
-        }
-        if(previouslyMovedBlackPawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.BLACK){
-            previouslyMovedBlackPawn.setDoubleJumped(false);
-        }
-        if(grabPieceByLocation(board, move.getbeginLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getbeginLocation()).getPieceColor() == Color.WHITE){
-            previouslyMovedWhitePawn = (Pawn) grabPieceByLocation(board, move.getbeginLocation());
-        }
-        if(grabPieceByLocation(board, move.getbeginLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getbeginLocation()).getPieceColor() == Color.BLACK){
-            previouslyMovedBlackPawn = (Pawn) grabPieceByLocation(board, move.getbeginLocation());
-        }
-
         if(move == null && playerWhoWillPlayNextTurn.hasOfferedDraw()){
             status = GameStatus.DRAW;
             return;
         } else {
             playerWhoWillPlayNextTurn.setOfferedDraw(false);
         }
+
         status = playerWhoWillPlayThisTurn.playTurn(board, move, status);
 
         setTurn(playerWhoWillPlayNextTurn, playerWhoWillPlayThisTurn);
+
+        if(previouslyMovedWhitePawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE){
+            previouslyMovedWhitePawn.setDoubleJumped(false);
+        }
+        if(previouslyMovedBlackPawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.BLACK){
+            previouslyMovedBlackPawn.setDoubleJumped(false);
+        }
+        if(move != null && grabPieceByLocation(board, move.getEndLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getEndLocation()).getPieceColor() == Color.WHITE){
+            previouslyMovedWhitePawn = (Pawn) grabPieceByLocation(board, move.getEndLocation());
+        }
+        if(move != null && grabPieceByLocation(board, move.getEndLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getEndLocation()).getPieceColor() == Color.BLACK){
+            previouslyMovedBlackPawn = (Pawn) grabPieceByLocation(board, move.getEndLocation());
+        }
 
     }
 
