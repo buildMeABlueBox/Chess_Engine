@@ -436,13 +436,13 @@ public final class ChessUtil {
         //TODO: implement fully.
         Color currentPlayerColor = piece.getPieceColor();
         Color possibleCheckedPlayerColor = currentPlayerColor == Color.BLACK? Color.WHITE : Color.BLACK;
-        if(opposingKingInCheckMate(board,piece)){
-            if(possibleCheckedPlayerColor == Color.BLACK){
-                return GameStatus.WHITE_WINS;
-            } else {
-                return GameStatus.BLACK_WINS;
-            }
-        }
+//        if(opposingKingInCheckMate(board,piece)){
+//            if(possibleCheckedPlayerColor == Color.BLACK){
+//                return GameStatus.WHITE_WINS;
+//            } else {
+//                return GameStatus.BLACK_WINS;
+//            }
+//        }
         if(opposingKingInCheck(board, piece)){
             if(possibleCheckedPlayerColor == Color.BLACK) {
                 return GameStatus.BLACK_IN_CHECK;
