@@ -4,12 +4,14 @@ import static chess.ChessUtil.*;
  * Created by Abhijit on 3/1/16.
  */
 public class Rook extends Piece {
+    private boolean wasMoved;
     public Rook() {
 
     }
 
     public Rook(Color pieceColor, PieceType pieceType) {
         super(pieceColor, pieceType);
+        wasMoved = false;
     }
 
     @Override
@@ -94,5 +96,13 @@ public class Rook extends Piece {
             }
         }
         return false;
+    }
+
+    public boolean wasMoved() {
+        return wasMoved;
+    }
+
+    public void setWasMoved(boolean wasMoved) {
+        this.wasMoved = wasMoved;
     }
 }

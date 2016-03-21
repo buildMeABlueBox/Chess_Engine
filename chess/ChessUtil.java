@@ -691,7 +691,9 @@ public final class ChessUtil {
         int endLocationCol = move.getEndLocation().getCol();
         int beginLocationRow = move.getbeginLocation().getRow();
         int beginLocationCol = move.getbeginLocation().getCol();
-        board[beginLocationRow][beginLocationCol].setPiece(null);
+        if(piece.getPieceType()!= PieceType.KING){
+            board[beginLocationRow][beginLocationCol].setPiece(null);
+        }
         if(piece.getPieceType() == PieceType.PAWN){
             Pawn pawn = (Pawn) piece;
             pawn.setWasMoved(true);
@@ -707,8 +709,144 @@ public final class ChessUtil {
                 piece = pawn;
             }
         }
+        if(piece.getPieceType() == PieceType.ROOK){
+            Rook rook = (Rook) piece;
+            rook.setWasMoved(true);
+            piece = rook;
+        }
+        if(piece.getPieceType() == PieceType.KING){
+            //check if move is castling
+            if(isTryingToCastle(board, move)){
+                if(isValidCastle(board, move)){
+                //move rook and king
+
+                    //move king
+                    board[beginLocationRow][beginLocationCol].setPiece(null);
+                    board[endLocationRow][endLocationCol].setPiece(piece);
+                    piece.setLocation(board[endLocationRow][endLocationCol]);
+
+                    //king moved to bottom east
+                    if(endLocationRow == 7 && endLocationCol == 6){
+                        board[7][5].setPiece(board[7][7].getPiece());
+                        board[7][7].setPiece(null);
+                        board[7][5].getPiece().setLocation(board[7][5]);
+                        return;
+                    } else if(endLocationRow == 7 & endLocationCol == 2){
+                        board[7][3].setPiece(board[7][0].getPiece());
+                        board[7][0].setPiece(null);
+                        board[7][3].getPiece().setLocation(board[7][3]);
+                        return;
+                    } else if(endLocationRow == 0 && endLocationCol == 2){
+                        board[0][3].setPiece(board[0][0].getPiece());
+                        board[0][0].setPiece(null);
+                        board[0][3].getPiece().setLocation(board[0][3]);
+                        return;
+                    } else if(endLocationRow == 0 && endLocationCol == 6){
+                        board[0][5].setPiece(board[0][7].getPiece());
+                        board[0][7].setPiece(null);
+                        board[0][5].getPiece().setLocation(board[0][5]);
+                        return;
+                    }
+
+                }
+            }
+        }
         board[endLocationRow][endLocationCol].setPiece(piece);
         piece.setLocation(board[endLocationRow][endLocationCol]);
+    }
+
+    public static boolean isTryingToCastle(Square[][] board, Move move) {
+        //grab king and check color.
+        King king = (King) grabPieceByLocation(board, move.getbeginLocation());
+        if(king == null || king.wasMoved()){
+            return false;
+        }
+        Color kingColor = king.getPieceColor();
+        Square blackRightSquare = board[0][6];
+        Square blackLeftSquare = board[0][2];
+        Square whiteRightSquare = board[7][2];
+        Square whiteLeftSquare = board[7][6];
+
+        if(satisfiesCastleLocations(kingColor, Color.BLACK, move.getEndLocation(), blackLeftSquare)){
+            //black king trying to move to the black left square
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.BLACK, move.getEndLocation(), blackRightSquare)){
+            //black king trying to move to the black right square
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.WHITE, move.getEndLocation(), whiteRightSquare)){
+            //white king trying to move to right white square
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.WHITE, move.getEndLocation(), whiteLeftSquare)){
+            //white king trying to move to white left square
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean satisfiesCastleLocations(Color kingColor, Color playerColor, Square endLocation, Square constantLoc){
+        return kingColor == playerColor && endLocation == constantLoc;
+    }
+
+    public static boolean isValidCastle(Square[][] board, Move move) {
+        King king = (King) grabPieceByLocation(board, move.getbeginLocation());
+        if(king.wasMoved()){
+            return false;
+        }
+        Color kingColor = king.getPieceColor();
+        Rook blackLeftRook = (Rook)board[0][0].getPiece();
+        Rook blackRightRook = (Rook)board[0][7].getPiece();
+        Rook whiteLeftRook = (Rook)board[7][0].getPiece();
+        Rook whiteRightRook = (Rook)board[7][7].getPiece();
+        Square blackRightSquare = board[0][6];
+        Square blackLeftSquare = board[0][2];
+        Square whiteRightSquare = board[7][6];
+        Square whiteLeftSquare = board[7][2];
+
+        if(satisfiesCastleLocations(kingColor, Color.BLACK, move.getEndLocation(), blackLeftSquare)){
+            //black king trying to move to the black left square
+            //check if squares are empty and king and rook were never moved.
+            if(grabPieceByLocation(board, board[0][3]) != null || grabPieceByLocation(board, board[0][2]) != null ||  grabPieceByLocation(board, board[0][1]) != null
+                    || blackLeftRook == null ||  blackLeftRook.wasMoved()){
+                //piece between left rook and king
+                return false;
+            }
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.BLACK, move.getEndLocation(), blackRightSquare)){
+            //black king trying to move to the black right square
+            //check if squares are empty and king and rook were never moved.
+            if(grabPieceByLocation(board, board[0][5]) != null || grabPieceByLocation(board, board[0][6]) != null
+                    || blackRightRook == null ||  blackRightRook.wasMoved()){
+                //piece between right rook and king
+                return false;
+            }
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.WHITE, move.getEndLocation(), whiteRightSquare)){
+            //white king trying to move to right white square
+            //check if squares are empty and king and rook were never moved.
+            if(grabPieceByLocation(board, board[7][5]) != null || grabPieceByLocation(board, board[7][6]) != null
+                    || whiteRightRook == null ||  whiteRightRook.wasMoved()){
+                //piece between right rook and king
+                return false;
+            }
+            return true;
+        }
+        if(satisfiesCastleLocations(kingColor, Color.WHITE, move.getEndLocation(), whiteLeftSquare)){
+            //white king trying to move to white left square
+            //check if squares are empty and king and rook were never moved.
+            if(grabPieceByLocation(board, board[7][3]) != null || grabPieceByLocation(board, board[7][2]) != null ||  grabPieceByLocation(board, board[7][1]) != null
+                    || whiteLeftRook == null ||  whiteLeftRook.wasMoved()){
+                //piece between left rook and king
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

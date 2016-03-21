@@ -7,12 +7,14 @@ import static chess.ChessUtil.*;
  * Created by Abhijit on 3/1/16.
  */
 public class King extends Piece{
+    private boolean wasMoved;
 
     public King() {
     }
 
     public King(Color pieceColor, PieceType pieceType) {
         super(pieceColor, pieceType);
+        wasMoved = false;
     }
 
     @Override
@@ -23,15 +25,15 @@ public class King extends Piece{
      */
     public boolean isMoveValid(Move move, Square[][] board) {
         //TODO: implement king movement
-//        if(isTryingToCastle(move)){
-//            if(isValidCastle(move)){
-//                //move rook and king
-//
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
+        if(isTryingToCastle(board, move)){
+            if(isValidCastle(board, move)){
+                //move rook and king
+
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         ArrayList<Square> possibleMoves = getPossibleMoves(board, move.getbeginLocation());
         Piece piece = grabPieceByLocation(board, move.getEndLocation());
@@ -114,5 +116,13 @@ public class King extends Piece{
 
 
         return possibleMoves;
+    }
+
+    public boolean wasMoved() {
+        return wasMoved;
+    }
+
+    public void setWasMoved(boolean wasMoved) {
+        this.wasMoved = wasMoved;
     }
 }
