@@ -31,13 +31,6 @@ public class Game {
         initialize();
     }
 
-//    public static void main(String[] args){
-//        Game game = new Game();
-//        game.initialize();
-//        printBoard(game.board);
-//        requestInput(game.white);
-//    }
-
     /**
      * Resumes the game that is being played.
      *
@@ -99,7 +92,7 @@ public class Game {
 
     /**
      * places pieces on the players board in the starting position of a chess game.
-     * @param player
+     * @param player - current player
      */
     private void placePiecesInStartingPosition(Player player) {
         int num;

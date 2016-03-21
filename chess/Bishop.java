@@ -34,6 +34,12 @@ public class Bishop extends Piece {
         return false;
     }
 
+    /**
+     * checks if there is a piece in between the beginning and ending location
+     * @param board - current state of board
+     * @param move - move being applied
+     * @return true if theere is no piece in between beginning and ending location
+     */
     private boolean noPieceInBetween(Square[][] board, Move move){
         int beginRow, beginCol, endRow, endCol, possRow, possCol;
         beginRow = move.getbeginLocation().getRow();
@@ -115,6 +121,12 @@ public class Bishop extends Piece {
         return false;
     }
 
+    /**
+     * gets the possible moves for bishop
+     * @param board - current state of board
+     * @param beginLocation - the location of the square bishop is currently on
+     * @return a list of possible moves that the bishop can move to
+     */
     private ArrayList<Square> getPossibleMoves(Square[][] board, Square beginLocation){
         ArrayList<Square> possibleMoves = new ArrayList<Square>();
         int possRow = beginLocation.getRow();

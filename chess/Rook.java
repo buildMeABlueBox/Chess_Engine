@@ -60,7 +60,9 @@ public class Rook extends Piece {
     /**
      * Takes difference between ending location and beginning location and sees
      * that for every square between those, there isn't a piece
-     * @param move
+     * @param move - move being applied
+     * @param board - current state of board
+     * @param  rowsSame - true if rows are same
      * @return true if there is a piece between the board squares
      */
     private boolean isPieceInBetween(Square[][] board, Move move, boolean rowsSame) {

@@ -16,6 +16,11 @@ public class Chess {
         printResult(chessGame.getStatus());
     }
 
+    /**
+     * prints the result of the game
+     *
+     * @param gameStatus - status of game
+     */
     public static void printResult(GameStatus gameStatus){
         switch(gameStatus){
             default:
@@ -34,6 +39,11 @@ public class Chess {
         }
     }
 
+    /**
+     *
+     * @param gameStatus - status of the game
+     * @return true if status is one where you should keep playing
+     */
     public static boolean keepPlaying(GameStatus gameStatus){
         switch(gameStatus){
             case WHITE_IN_CHECK:

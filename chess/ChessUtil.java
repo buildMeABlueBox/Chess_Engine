@@ -15,6 +15,11 @@ public final class ChessUtil {
         //private constructor so cannot be instantiated.
     }
 
+    /**
+     *
+     * @param c - character that might be a piece
+     * @return false if it isn't N, Q, B, R
+     */
     public static boolean checkPromotionChar(char c){
         switch(c){
             default:
@@ -30,6 +35,12 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * @param player - player playing this turn
+     * @param board - current board
+     * @return Move which contains the beginning location, end location, if the player asked for draw, and if it was a pawn and was promoting
+     */
     public static Move requestInput(Player player, Square[][] board){
         System.out.println(player.getPlayerColor().toString().substring(0, 1) +
                 player.getPlayerColor().toString().substring(1).toLowerCase()+ "'s move:");
@@ -41,13 +52,18 @@ public final class ChessUtil {
     }
 
     /**
-     * Checks input. Heres how it checks:
+     *
+     * * Checks input. Heres how it checks:
      * - checks if length of input is 2 or 3 (2 for just coordinates 3 in case person asks for draw)
      * - if the length is 3, the last part of the input better be draw
      * - checks coordinates are in follow the form of File, Rank.
      *
      * If any of these do not match, the user is then asked for the input again.
-     * @param input
+     *
+     * @param input - input that user gave
+     * @param player - player thats playing
+     * @param board - current state of board
+     * @return move depending on input. can be null
      */
     private static Move getUserInput(String input, Player player, Square[][] board) {
         String[] individualInputs = input.split(" ");
@@ -145,7 +161,7 @@ public final class ChessUtil {
      * e2 e5
      * or
      * e2 e5 draw
-     * @param individualInput
+     * @param individualInput - a potential file-rank
      * @return true if it is in the proper file-rank system
      */
     private static boolean isFileRank(String individualInput) {
@@ -170,6 +186,8 @@ public final class ChessUtil {
      * but if you try to access board[2][i] thinking you'd get
      * row 2, you are actually getting row 6. So to counter this,
      * just get the difference.
+     *
+     * @param rowNumWanted - the row num that the user wanted to get on the board
      */
     public static int getRowNum(int rowNumWanted){
         return 8-rowNumWanted;
@@ -212,7 +230,7 @@ public final class ChessUtil {
      * K for king,
      * N for knight,
      * Q for queen
-     * @param piece
+     * @param piece - piece that is being passed through.
      */
     private static void printPiece(Piece piece){
         Color pieceColor = piece.getPieceColor();
@@ -271,6 +289,8 @@ public final class ChessUtil {
      * prints ## on black squares and leaves white squares empty.
      * prints the pieces where they would be on the board as well.
      *
+     * @param board - current state of board
+     *
      */
     public static void printBoard(Square[][] board){
         System.out.println();
@@ -294,7 +314,7 @@ public final class ChessUtil {
     /**
      * given a beginning or end location input, get the file of the input.
      *
-     * @param input
+     * @param input - input containing filerank
      * @return first letter in input
      */
     public char getFile(String input){
@@ -303,8 +323,8 @@ public final class ChessUtil {
 
     /**
      * given a beginning or end location input, get the rank of the input.
-     * @param input
-     * @return second letter in input
+     * @param input - input containing file-rank
+     * @return second letter in input in the form of an int
      */
     public int getRank(String input){
         return Character.getNumericValue(input.charAt(1));
@@ -312,7 +332,7 @@ public final class ChessUtil {
 
     /**
      * prints ## if sq is black or "   " if white.
-     * @param sq
+     * @param sq - square that is on the board
      */
     private static void printSquare(Square sq) {
         if(sq.getColor() == Color.WHITE){
@@ -322,23 +342,52 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * The input is invalid so print illegal move and call request input again
+     *
+     * @param player - player who's playing
+     * @param board - current state of board
+     * @return Move based on players input
+     */
     public static Move invalidInput(Player player, Square [][] board){
         System.out.println("\nIllegal move, try again\n");
         return requestInput(player, board);
     }
 
+    /**
+     *
+     *gets the suqare that is on the board based on the user's input of the location of the square.
+     *
+     * @param board - current state of board
+     * @param locationString - holds the location of the square
+     * @return Square that is on the board based on location string
+     */
     private static Square getSquare(Square[][] board, String locationString){
         int x = getNumFromChar(locationString.charAt(0));
         int y = getRowNum(Character.getNumericValue(locationString.charAt(1)));
         return board[y][x];
     }
 
+    /**
+     *
+     * @param board - current state of board
+     * @param location - location of the square
+     * @return Piece depending on location of square on the board.
+     */
     public static Piece grabPieceByLocation(Square[][] board, Square location){
         int row = location.getRow();
         int col = location.getCol();
         return board[row][col].getPiece();
     }
 
+    /**
+     *
+     * @param board - current state of board
+     * @param color - color of piece
+     * @param type - type of piece
+     * @return Piece based on the color of the piece and the type of piece
+     */
     public static Piece grabPieceByColorAndType(Square[][] board, Color color, PieceType type){
         for(Square[] squares : board){
             for(Square square : squares){
@@ -353,7 +402,11 @@ public final class ChessUtil {
 
     /**
      * calls isMoveValid to the specific piece.
-     * @param piece
+     * @param piece - piece that's going to be called if the move is valid
+     * @param  board - current state of board
+     * @param  move - move which is going to be passed through the piece's ismovevalid
+     *
+     *@return true if the move is valid depending on piece
      */
     public static boolean callSpecificMoveisValid(Piece piece, Square[][] board, Move move){
         switch (piece.getPieceType()){
@@ -383,8 +436,9 @@ public final class ChessUtil {
 
 
     /**
-     * @param beginningSquare
-     * @param rightSquare
+     * @param board - current state of board
+     * @param beginningSquare - the square that has the beginning location
+     * @param rightSquare - looking for right square?
      * @return diagonal square to the square that was passed in. which diagonal? depends on whether the right square was wanted. if it wasn't, return the left diagonal.
      * returns null if square is out of bounds.
      */
@@ -432,6 +486,13 @@ public final class ChessUtil {
             return board[diagonalRow][diagonalCol];
         }
     }
+
+    /**
+     *
+     * @param board - current state of board
+     * @param piece - current piece being used to find status
+     * @return GameStatus depending on the status of the game
+     */
     public static GameStatus findGameStatus(Square[][] board, Piece piece){
         //TODO: implement fully.
         Color currentPlayerColor = piece.getPieceColor();
@@ -453,6 +514,12 @@ public final class ChessUtil {
         else return GameStatus.PENDING;
     }
 
+    /**
+     *
+     * @param board - state of board
+     * @param piece - piece which is moving
+     * @return true if the opposite players king is in checkmate
+     */
     private static boolean opposingKingInCheckMate(Square[][] board, Piece piece) {
         //get color of player who is putting other player's king in checkmate (if white is playing, get white)
         Color playerColor = piece.getPieceColor();
@@ -505,6 +572,12 @@ public final class ChessUtil {
         return possEndLocSize == counter;
     }
 
+    /**
+     *
+     * @param piece - piece that is moving backwards
+     * @param move - move that is being called
+     * @return true if the piece is moving backwards
+     */
     public static boolean tryingToMoveBackwards(Piece piece, Move move){
         if(piece == null){
             return false;
@@ -528,15 +601,30 @@ public final class ChessUtil {
         }
     }
 
-
+    /**
+     *
+     * @param move - object wrapper holding columns for beginning and ending locations
+     * @return true if the columns are the same
+     */
     public static boolean colsSame(Move move){
         return move.getbeginLocation().getCol() == move.getEndLocation().getCol();
     }
 
+    /**
+     *
+     * @param move - wrapper holding rows for beginning and ending locations
+     * @return true if the rows are the same
+     */
     public static boolean rowsSame(Move move){
         return move.getbeginLocation().getRow() == move.getEndLocation().getRow();
     }
 
+    /**
+     *
+     * @param move - move holding rows and columns for beginning and ending location
+     * @param rowsSame - true if rows are same
+     * @return true if the distance is valid
+     */
     public static boolean isValidDistance(Move move, boolean rowsSame){
         if(rowsSame){
             return sevenOrLess(move.getEndLocation().getCol()-move.getbeginLocation().getCol());
@@ -545,14 +633,30 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * @param x - integer to be checked
+     * @return true if x is zero or greater
+     */
     public static boolean zeroOrMore(int x){
         return x >= 0;
     }
 
+    /**
+     *
+     * @param x - integer to be checked
+     * @return true if seven of less
+     */
     public static boolean sevenOrLess(int x){
         return x <= 7;
     }
 
+    /**
+     *
+     * @param piece - piece that is moving
+     * @param move - move that the piece will be moving
+     * @return true if the piece is capturing the same color piece
+     */
     public static boolean capturingSameColor(Piece piece, Move move){
         Piece pieceAtBeginningLocation = move.getbeginLocation().getPiece();
         if(pieceAtBeginningLocation == null){
@@ -564,12 +668,18 @@ public final class ChessUtil {
         return beginPieceColor==endPieceColor;
     }
 
+    /**
+     *
+     * @param row - row on board
+     * @param col - column on board
+     * @return true if the row and column are within bounds of the board
+     */
     public static boolean isWithinBounds(int row, int col){
         return zeroOrMore(row) && zeroOrMore(col) && sevenOrLess(row) && sevenOrLess(col);
     }
 
     /**
-     * @param board
+     * @param board - current state of board
      * @param color - color of piece (not opposing piece)
      * @return list of opposing pieces by opposing player
      */
@@ -589,7 +699,7 @@ public final class ChessUtil {
 
     /**
      *
-     * @param board
+     * @param board - current state of board
      * @param piece - piece that was moved and might be checking square
      * @return true if the piece that was moved can move to the king's position
      */
@@ -630,6 +740,11 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * @param status - status of game
+     * @return return Status of game
+     */
     public static boolean statusIsCheck(GameStatus status){
         return status == GameStatus.BLACK_IN_CHECK || status == GameStatus.WHITE_IN_CHECK;
     }
@@ -686,6 +801,12 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * @param board - current status of board
+     * @param piece - piece that's being moved
+     * @param move - move thats being applied to the piece
+     */
     public static void movePiece(Square[][] board, Piece piece, Move move) {
         int endLocationRow = move.getEndLocation().getRow();
         int endLocationCol = move.getEndLocation().getCol();
@@ -764,6 +885,13 @@ public final class ChessUtil {
         piece.setLocation(board[endLocationRow][endLocationCol]);
     }
 
+    /**
+     *
+     * @param board - current state of board
+     * @param move - move that's being applied
+     * @return true if the move is the king trying to castle
+     */
+
     public static boolean isTryingToCastle(Square[][] board, Move move) {
         //grab king and check color.
         King king = (King) grabPieceByLocation(board, move.getbeginLocation());
@@ -796,9 +924,24 @@ public final class ChessUtil {
         return false;
     }
 
+    /**
+     *
+     * @param kingColor - color of king
+     * @param playerColor - color of player
+     * @param endLocation - square that specifies the ending location
+     * @param constantLoc - square that specifies the constant location
+     * @return true if it satisfies the catle location
+     */
     private static boolean satisfiesCastleLocations(Color kingColor, Color playerColor, Square endLocation, Square constantLoc){
         return kingColor == playerColor && endLocation == constantLoc;
     }
+
+    /**
+     *
+     * @param board - current status of board
+     * @param move - move being applied
+     * @return true if it is a valid castle move
+     */
 
     public static boolean isValidCastle(Square[][] board, Move move) {
         King king = (King) grabPieceByLocation(board, move.getbeginLocation());
@@ -866,7 +1009,7 @@ public final class ChessUtil {
      * if a king is killing a piece by moving to its end location, change the color of that piece to the opposite color.
      * if a king is moving and not killing a piece, put a new piece there with the opposite color.
      *
-     * @param board
+     * @param board - current status of board
      * @param move - contains the ending location of the square where the king will be
      * @return true if isMoveValid for any of the pieces is true. false otherwise
      */
@@ -917,6 +1060,12 @@ public final class ChessUtil {
         }
     }
 
+    /**
+     *
+     * @param board - current status of board
+     * @param move - move being applied
+     * @return true if the move is pawn trying to do enpassant
+     */
     public static boolean isEnpassant(Square[][] board, Move move){
         Square endingLocation = move.getEndLocation();
         Square rightDiagonal = getDiagonalSquare(board, move.getbeginLocation(), true);

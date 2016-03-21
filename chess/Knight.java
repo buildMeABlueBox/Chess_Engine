@@ -27,8 +27,8 @@ public class Knight extends Piece{
     }
 
     /**
-     *
-     * @param beginLocation
+     * @param board - current state of board
+     * @param beginLocation - beginning location of the knight
      * @return an array list of squares where the knight can possibly move so you can check if the end location is one of them.
      */
     private ArrayList<Square> getPossibleLocations(Square[][] board, Square beginLocation) {

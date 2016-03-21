@@ -44,6 +44,12 @@ public class King extends Piece{
         }
     }
 
+    /**
+     *
+     * @param board - current state of board
+     * @param beginLocation - Square of beginning location of king
+     * @return list of possible moves that king can move to.
+     */
     public ArrayList<Square> getPossibleMoves(Square[][] board, Square beginLocation) {
         ArrayList<Square> possibleMoves = new ArrayList<Square>();
         int beginRow, beginCol, row, col;
