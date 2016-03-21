@@ -18,6 +18,7 @@ public class Player {
     private List<Piece> pieces = new ArrayList<Piece>();
     private Color playerColor;
     private boolean isTurn;
+    private boolean offeredDraw;
 
     // All player's List<Pieces> will be the color of the player(white or black).
     public Player(Color color){
@@ -59,7 +60,13 @@ public class Player {
      *
      */
     public GameStatus playTurn(Square[][] board, Move move, GameStatus currentStatus){
-        //TODO: implement.
+        //TODO: implement
+        while(move == null){
+            move = invalidInput(this, board);
+        }
+        if(move.getDrawRequest()){
+            offeredDraw = true;
+        }
         Square beginningSquare = move.getbeginLocation();
         Piece piece = grabPieceByLocation(board, beginningSquare);
 
@@ -125,4 +132,11 @@ public class Player {
         this.isTurn = isTurn;
     }
 
+    public boolean hasOfferedDraw() {
+        return offeredDraw;
+    }
+
+    public void setOfferedDraw(boolean wasOfferedDraw) {
+        this.offeredDraw = wasOfferedDraw;
+    }
 }

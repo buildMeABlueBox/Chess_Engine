@@ -19,18 +19,18 @@ public class Chess {
     public static void printResult(GameStatus gameStatus){
         switch(gameStatus){
             default:
-                System.err.println("called from default: " + gameStatus.toString());
+                System.err.println("\ncalled from default: " + gameStatus.toString());
             case BLACK_WINS:
-                System.out.println("Checkmate \n\n Black wins");
+                System.out.println("Checkmate \n\nBlack wins");
                 break;
             case WHITE_WINS:
-                System.out.println("Checkmate \n\n White wins");
+                System.out.println("Checkmate \n\nWhite wins");
                 break;
             case DRAW:
-                System.out.println("Draw");
+                System.out.println("\nDraw");
                 break;
             case STALEMATE:
-                System.out.println("Stalemate");
+                System.out.println("\nStalemate");
         }
     }
 

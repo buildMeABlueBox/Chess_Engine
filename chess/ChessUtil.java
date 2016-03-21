@@ -52,8 +52,23 @@ public final class ChessUtil {
     private static Move getUserInput(String input, Player player, Square[][] board) {
         String[] individualInputs = input.split(" ");
         Piece piece;
+
         switch(individualInputs.length){
             default:
+                return invalidInput(player, board);
+
+            case 1:
+                if(individualInputs[0].equalsIgnoreCase("draw")){
+                    return null;
+                } else if(individualInputs[0].equalsIgnoreCase("resign")){
+                    Color color = player.getPlayerColor();
+                    if(color == Color.WHITE){
+                        System.out.println("\nBlack Wins");
+                    } else {
+                        System.out.println("\nWhite Wins");
+                    }
+                    System.exit(0);
+                }
                 return invalidInput(player, board);
             case 2:
                 String beginLocationString = individualInputs[0];
@@ -109,7 +124,7 @@ public final class ChessUtil {
                 }
 
                 //see if the user requested a draw.
-                if(!individualInputs[2].equalsIgnoreCase("draw")){
+                if(!individualInputs[2].equalsIgnoreCase("draw?")){
                     //player did not ask for draw. its some random gibberish..
                     return invalidInput(player, board);
                 }
