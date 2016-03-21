@@ -20,6 +20,8 @@ public class Game {
     private final Player white = new Player(Color.WHITE);
     private final Player black = new Player(Color.BLACK);
     private GameStatus status;
+    private Pawn previouslyMovedWhitePawn;
+    private Pawn previouslyMovedBlackPawn;
 
     public Game(){
         status = GameStatus.PENDING;
@@ -47,6 +49,19 @@ public class Game {
         Player playerWhoWillPlayNextTurn = playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE? black : white;
 
         Move move = requestInput(playerWhoWillPlayThisTurn, board);
+        if(previouslyMovedWhitePawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.WHITE){
+            previouslyMovedWhitePawn.setDoubleJumped(false);
+        }
+        if(previouslyMovedBlackPawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.BLACK){
+            previouslyMovedBlackPawn.setDoubleJumped(false);
+        }
+        if(grabPieceByLocation(board, move.getbeginLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getbeginLocation()).getPieceColor() == Color.WHITE){
+            previouslyMovedWhitePawn = (Pawn) grabPieceByLocation(board, move.getbeginLocation());
+        }
+        if(grabPieceByLocation(board, move.getbeginLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getbeginLocation()).getPieceColor() == Color.BLACK){
+            previouslyMovedBlackPawn = (Pawn) grabPieceByLocation(board, move.getbeginLocation());
+        }
+
         if(move == null && playerWhoWillPlayNextTurn.hasOfferedDraw()){
             status = GameStatus.DRAW;
             return;
@@ -56,6 +71,7 @@ public class Game {
         status = playerWhoWillPlayThisTurn.playTurn(board, move, status);
 
         setTurn(playerWhoWillPlayNextTurn, playerWhoWillPlayThisTurn);
+
     }
 
     /**
@@ -200,5 +216,21 @@ public class Game {
 
     public void setStatus(GameStatus status) {
         this.status = status;
+    }
+
+    public Pawn getPreviouslyMovedWhitePawn() {
+        return previouslyMovedWhitePawn;
+    }
+
+    public void setPreviouslyMovedWhitePawn(Pawn previouslyMovedPawn) {
+        this.previouslyMovedWhitePawn = previouslyMovedPawn;
+    }
+
+    public Pawn getPreviouslyMovedBlackPawn() {
+        return previouslyMovedBlackPawn;
+    }
+
+    public void setPreviouslyMovedBlackPawn(Pawn previouslyMovedBlackPawn) {
+        this.previouslyMovedBlackPawn = previouslyMovedBlackPawn;
     }
 }

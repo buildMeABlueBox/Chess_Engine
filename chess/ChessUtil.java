@@ -945,4 +945,8 @@ public final class ChessUtil {
 
         return true;
     }
+
+    public static boolean oneOrTwo(int x){
+        return x == 1 || x == 2;
+    }
 }
