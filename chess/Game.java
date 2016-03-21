@@ -59,10 +59,10 @@ public class Game {
         if(previouslyMovedBlackPawn != null && playerWhoWillPlayThisTurn.getPlayerColor() == Color.BLACK){
             previouslyMovedBlackPawn.setDoubleJumped(false);
         }
-        if(move != null && grabPieceByLocation(board, move.getEndLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getEndLocation()).getPieceColor() == Color.WHITE){
+        if(move != null && makeSureNotNullandCompare(board, move, Color.WHITE)){
             previouslyMovedWhitePawn = (Pawn) grabPieceByLocation(board, move.getEndLocation());
         }
-        if(move != null && grabPieceByLocation(board, move.getEndLocation()).getPieceType() == PieceType.PAWN && grabPieceByLocation(board, move.getEndLocation()).getPieceColor() == Color.BLACK){
+        if(move != null && makeSureNotNullandCompare(board, move, Color.BLACK)){
             previouslyMovedBlackPawn = (Pawn) grabPieceByLocation(board, move.getEndLocation());
         }
 

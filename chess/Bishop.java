@@ -43,6 +43,12 @@ public class Bishop extends Piece {
      */
     private boolean noPieceInBetween(Square[][] board, Move move){
         int beginRow, beginCol, endRow, endCol, possRow, possCol;
+
+        if(move.getEndLocation()  == getDiagonalSquare(board, move.getbeginLocation(), true) || move.getEndLocation() == getDiagonalSquare(board,move.getbeginLocation(), false)){
+            //the ending location is just the diagonal square.
+            return true;
+        }
+        Square endLocation = move.getEndLocation();
         beginRow = move.getbeginLocation().getRow();
         beginCol = move.getbeginLocation().getCol();
         endRow = move.getEndLocation().getRow();
@@ -64,12 +70,13 @@ public class Bishop extends Piece {
             possCol++;
             possRow--;
             while(isWithinBounds(possRow,possCol)){
+                if(board[possRow][possCol] == endLocation){
+                    break;
+                }
                 //north east diagonal row - 1 col + 1
                 if(board[possRow--][possCol++].getPiece() != null){
                     return false;
                 }
-                else
-                    return true;
             }
         } else if(north && !east){
             //north west
@@ -79,11 +86,12 @@ public class Bishop extends Piece {
             possRow--;
             while(isWithinBounds(possRow,possCol)){
                 //north west diagonal row - 1 col - 1
+                if(board[possRow][possCol] == endLocation){
+                    break;
+                }
                 if(board[possRow--][possCol--].getPiece() != null){
                     return false;
                 }
-                else
-                    return true;
             }
 
         } else if (!north && !east){
@@ -94,11 +102,12 @@ public class Bishop extends Piece {
             possCol--;
             while(isWithinBounds(possRow,possCol)){
                 //south west diagonal -- row + 1 col -1
+                if(board[possRow][possCol] == endLocation){
+                    break;
+                }
                 if(board[possRow++][possCol--].getPiece() != null){
                     return false;
                 }
-                else
-                    return true;
             }
 
         } else if( !north && east){
@@ -111,15 +120,15 @@ public class Bishop extends Piece {
             possRow++;
             while(isWithinBounds(possRow,possCol)){
                 //south east diagonal -- row + 1 col + 1
+                if(board[possRow][possCol] == endLocation){
+                    break;
+                }
                 if(board[possRow++][possCol++].getPiece() != null){
                     return false;
                 }
-                else
-                    return true;
             }
-
         }
-        return false;
+        return true;
     }
 
     /**

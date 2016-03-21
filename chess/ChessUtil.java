@@ -883,6 +883,7 @@ public final class ChessUtil {
 
                 }
             }
+            board[beginLocationRow][beginLocationCol].setPiece(null);
         }
         board[endLocationRow][endLocationCol].setPiece(piece);
         piece.setLocation(board[endLocationRow][endLocationCol]);
@@ -906,6 +907,11 @@ public final class ChessUtil {
         Square blackLeftSquare = board[0][2];
         Square whiteRightSquare = board[7][2];
         Square whiteLeftSquare = board[7][6];
+
+        if(Math.abs(move.getEndLocation().getCol()-move.getbeginLocation().getCol()) != 2){
+            //not moving 2 squares.
+            return false;
+        }
 
         if(satisfiesCastleLocations(kingColor, Color.BLACK, move.getEndLocation(), blackLeftSquare)){
             //black king trying to move to the black left square
@@ -1096,5 +1102,17 @@ public final class ChessUtil {
         }
 
         return true;
+    }
+
+    /**
+     *Compares the condition in the game class. just a helper method.
+     * @param board - state of board
+     * @param move - move that is moving
+     * @param color - color of the piece
+     * @return true if the condition is followed
+     */
+    public static boolean makeSureNotNullandCompare(Square[][] board, Move move, Color color){
+        Piece piece = grabPieceByLocation(board, move.getEndLocation());
+        return piece != null && piece.getPieceType() == PieceType.PAWN && piece.getPieceColor() == color;
     }
 }

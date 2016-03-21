@@ -49,7 +49,6 @@ public class Player {
             this.isTurn = false;
         }
     }
-
     /**
      * -Check if move is Valid
      * -Moves piece if it is valid
