@@ -691,10 +691,19 @@ public final class ChessUtil {
         int endLocationCol = move.getEndLocation().getCol();
         int beginLocationRow = move.getbeginLocation().getRow();
         int beginLocationCol = move.getbeginLocation().getCol();
-        if(piece.getPieceType()!= PieceType.KING){
+        if(piece.getPieceType()!= PieceType.KING && piece.getPieceType()!= PieceType.PAWN){
             board[beginLocationRow][beginLocationCol].setPiece(null);
         }
         if(piece.getPieceType() == PieceType.PAWN){
+            if(isEnpassant(board,move)){
+                board[beginLocationRow][beginLocationCol].setPiece(null);
+                board[endLocationRow][endLocationCol].setPiece(piece);
+                board[endLocationRow][endLocationCol].getPiece().setLocation(board[endLocationRow][endLocationCol]);
+                int row = piece.getPieceColor() == Color.BLACK? endLocationRow-1 : endLocationRow+1;
+                board[row][endLocationCol].setPiece(null);
+                return;
+            }
+            board[beginLocationRow][beginLocationCol].setPiece(null);
             Pawn pawn = (Pawn) piece;
             pawn.setWasMoved(true);
             if(reachingEnd(piece.getPieceColor(), endLocationRow)){
@@ -906,5 +915,34 @@ public final class ChessUtil {
             board[move.getEndLocation().getRow()][move.getEndLocation().getCol()].setPiece(null);
             return false;
         }
+    }
+
+    public static boolean isEnpassant(Square[][] board, Move move){
+        Square endingLocation = move.getEndLocation();
+        Square rightDiagonal = getDiagonalSquare(board, move.getbeginLocation(), true);
+        Square leftDiagonal = getDiagonalSquare(board, move.getbeginLocation(), false);
+        Color pawnThatisKillingColor = move.getbeginLocation().getPiece().getPieceColor();
+        Color pawnToBeKilledColor = pawnThatisKillingColor == Color.BLACK? Color.WHITE : Color.BLACK;
+        int row =0 , col = 0;
+
+        //ending location has to be diagonal square.
+        if(endingLocation != rightDiagonal && endingLocation != leftDiagonal){
+            return false;
+        }
+        if(endingLocation.getPiece() != null){
+            return false;
+        }
+        //get row and column for piece that is about to be killed
+        row = pawnToBeKilledColor == Color.BLACK? move.getEndLocation().getRow()+1:move.getEndLocation().getRow()-1;
+        col = endingLocation.getCol();
+
+        //pawn that's about to be killed
+        Piece pawnToBeKilled = grabPieceByLocation(board, board[row][col]);
+
+        if(pawnToBeKilled == null || pawnToBeKilled.getPieceColor() != pawnToBeKilledColor){
+            return false;
+        }
+
+        return true;
     }
 }
