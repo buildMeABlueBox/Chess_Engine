@@ -42,7 +42,7 @@ public class King extends Piece{
         }
     }
 
-    private ArrayList<Square> getPossibleMoves(Square[][] board, Square beginLocation) {
+    public ArrayList<Square> getPossibleMoves(Square[][] board, Square beginLocation) {
         ArrayList<Square> possibleMoves = new ArrayList<Square>();
         int beginRow, beginCol, row, col;
 

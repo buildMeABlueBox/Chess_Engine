@@ -376,6 +376,11 @@ public final class ChessUtil {
     public static Square getDiagonalSquare(Square[][] board, Square beginningSquare, boolean rightSquare){
         int diagonalRow;
         int diagonalCol;
+
+        if(beginningSquare.getPiece() == null){
+            return null;
+        }
+
         if(rightSquare){
 
             if(beginningSquare.getPiece().getPieceColor() == Color.WHITE) {
@@ -389,7 +394,6 @@ public final class ChessUtil {
                 return null;
             }
 
-            //TODO: if there are errors from this method, it might be this
             if(diagonalCol< 0 || diagonalRow < 0){
                 return null;
             }
@@ -406,7 +410,6 @@ public final class ChessUtil {
             if(diagonalCol < 1 || diagonalRow < 1){
                 return null;
             }
-            //TODO: if there are errors from this method, it might be this
             if(diagonalCol > 7 || diagonalRow > 7){
                 return null;
             }
@@ -415,10 +418,17 @@ public final class ChessUtil {
         }
     }
     public static GameStatus findGameStatus(Square[][] board, Piece piece){
-        //TODO: implement
+        //TODO: implement fully.
         Color currentPlayerColor = piece.getPieceColor();
         Color possibleCheckedPlayerColor = currentPlayerColor == Color.BLACK? Color.WHITE : Color.BLACK;
-        if(opposingKingInCheck(board,piece)){
+        if(opposingKingInCheckMate(board,piece)){
+            if(possibleCheckedPlayerColor == Color.BLACK){
+                return GameStatus.WHITE_WINS;
+            } else {
+                return GameStatus.BLACK_WINS;
+            }
+        }
+        if(opposingKingInCheck(board, piece)){
             if(possibleCheckedPlayerColor == Color.BLACK) {
                 return GameStatus.BLACK_IN_CHECK;
             } else {
@@ -428,7 +438,62 @@ public final class ChessUtil {
         else return GameStatus.PENDING;
     }
 
+    private static boolean opposingKingInCheckMate(Square[][] board, Piece piece) {
+        //get color of player who is putting other player's king in checkmate (if white is playing, get white)
+        Color playerColor = piece.getPieceColor();
+
+        //get color of player who will be checkmated (if white is playing, then black will be checkmated)
+        Color opposingPlayerColor = playerColor == Color.BLACK? Color.WHITE : Color.BLACK;
+
+        //get the opposing player's pieces (if white is playing, get black's pieces)
+        ArrayList<Piece> opposingPlayerPieces = grabOpposingPlayerPieces(board, opposingPlayerColor);
+
+        //get the king that will be in check mate (if white is playing, then get black's king)
+        King possibleKingInCheckMate = (King) grabPieceByColorAndType(board, opposingPlayerColor, PieceType.KING);
+
+        //get the possible locations that the king can move to
+        ArrayList<Square> possibleKingEndingLocations = possibleKingInCheckMate.getPossibleMoves(board, possibleKingInCheckMate.getLocation());
+        int possEndLocSize = possibleKingEndingLocations.size();
+        int counter = 0;
+        //store the location of where the king is
+        Square kingOriginalLocation = possibleKingInCheckMate.getLocation();
+        Piece holderPiece = null;
+
+
+        for(Square possEndLoc : possibleKingEndingLocations){
+            //hold piece of where king is about to move to.
+            if(possEndLoc.getPiece() != null){
+                holderPiece = possEndLoc.getPiece();
+                possEndLocSize--;
+            }
+            //move king to the possible location and see if any piece can kill it.
+            movePiece(board, possibleKingInCheckMate, new Move(possibleKingInCheckMate.getLocation(), possEndLoc, false, ' '));
+            for(Piece p : opposingPlayerPieces){
+                if(p.isMoveValid(new Move(p.getLocation(), possEndLoc, false, ' '),board)){
+                    counter++;
+                    break;
+                }
+            }
+            //move king back to original position
+            movePiece(board, possibleKingInCheckMate, new Move(possibleKingInCheckMate.getLocation(), kingOriginalLocation, false, ' '));
+
+            //if the ending location the king was going to wasn't null, put the piece there
+            if(holderPiece!=null) {
+                board[possEndLoc.getRow()][possEndLoc.getCol()].setPiece(holderPiece);
+            }
+            holderPiece = null;
+        }
+        movePiece(board, possibleKingInCheckMate, new Move(possibleKingInCheckMate.getLocation(), kingOriginalLocation, false, ' '));
+        if(possEndLocSize == 0){
+            return false;
+        }
+        return possEndLocSize == counter;
+    }
+
     public static boolean tryingToMoveBackwards(Piece piece, Move move){
+        if(piece == null){
+            return false;
+        }
         if(piece.getPieceColor() == Color.WHITE){
             //white movement
             if( colsSame(move) && move.getEndLocation().getRow() > move.getbeginLocation().getRow() ){
@@ -475,6 +540,9 @@ public final class ChessUtil {
 
     public static boolean capturingSameColor(Piece piece, Move move){
         Piece pieceAtBeginningLocation = move.getbeginLocation().getPiece();
+        if(pieceAtBeginningLocation == null){
+            return false;
+        }
         Color beginPieceColor = pieceAtBeginningLocation.getPieceColor();
         Color endPieceColor = piece.getPieceColor();
 
@@ -551,6 +619,13 @@ public final class ChessUtil {
         return status == GameStatus.BLACK_IN_CHECK || status == GameStatus.WHITE_IN_CHECK;
     }
 
+    /**
+     *
+     * @param board
+     * @param move - contains move of piece moving that might block check
+     * @param status - status of game
+     * @return true if the move of the piece blocks the king from being checked or moves the king out of check.
+     */
     public static boolean isSavedFromCheck(Square[][] board, Move move, GameStatus status){
 
         //grab piece that's trying to move
